@@ -7,6 +7,7 @@ namespace final_project_Api.Models
     {
         [Key]
         public int Session_ID { get; set; }
+        [Column("Session_Title")]
         public string Material_Name { get; set; }
         [Column(TypeName = "date")]
         public DateTime Date { get; set; }

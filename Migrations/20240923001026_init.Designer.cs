@@ -473,14 +473,14 @@ namespace final_project_Api.Migrations
                     b.Property<string>("Student_ID")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("studentsUserId")
+                    b.Property<string>("Student_ID")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Student_Class_Id");
 
                     b.HasIndex("Class_ID");
 
-                    b.HasIndex("studentsUserId");
+                    b.HasIndex("Student_ID");
 
                     b.ToTable("student_classes");
                 });
@@ -791,7 +791,7 @@ namespace final_project_Api.Migrations
 
                     b.HasOne("final_project_Api.Models.Student", "students")
                         .WithMany("Student_Classes")
-                        .HasForeignKey("studentsUserId");
+                        .HasForeignKey("Student_ID");
 
                     b.Navigation("classs");
 

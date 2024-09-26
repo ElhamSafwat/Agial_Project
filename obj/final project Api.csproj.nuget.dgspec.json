@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Graduation project\\ra\\final project Api\\final project Api.csproj": {}
+    "E:\\final project Api\\final project Api.csproj": {}
   },
   "projects": {
-    "D:\\Graduation project\\ra\\final project Api\\final project Api.csproj": {
+    "E:\\final project Api\\final project Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Graduation project\\ra\\final project Api\\final project Api.csproj",
+        "projectUniqueName": "E:\\final project Api\\final project Api.csproj",
         "projectName": "final project Api",
-        "projectPath": "D:\\Graduation project\\ra\\final project Api\\final project Api.csproj",
-        "packagesPath": "C:\\Users\\AB\\.nuget\\packages\\",
-        "outputPath": "D:\\Graduation project\\ra\\final project Api\\obj\\",
+        "projectPath": "E:\\final project Api\\final project Api.csproj",
+        "packagesPath": "C:\\Users\\LENOVO\\.nuget\\packages\\",
+        "outputPath": "E:\\final project Api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\AB\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\LENOVO\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

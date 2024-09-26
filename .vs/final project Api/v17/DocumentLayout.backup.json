@@ -1,14 +1,14 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Graduation project\\ra\\final project Api\\",
+  "WorkspaceRootPath": "C:\\Users\\LENOVO\\Desktop\\Agial\\final project Api\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Graduation project\\ra\\final project Api\\Migrations\\20240923001026_init.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Migrations\\20240923001026_init.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{534D0321-7FA0-44A8-96E6-338A5B3FECC0}|final project Api.csproj|c:\\users\\lenovo\\desktop\\agial\\final project api\\controllers\\classcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{534D0321-7FA0-44A8-96E6-338A5B3FECC0}|final project Api.csproj|solutionrelative:controllers\\classcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{534D0321-7FA0-44A8-96E6-338A5B3FECC0}|final project Api.csproj|d:\\graduation project\\ra\\final project api\\models\\agialcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{534D0321-7FA0-44A8-96E6-338A5B3FECC0}|final project Api.csproj|solutionrelative:models\\agialcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{534D0321-7FA0-44A8-96E6-338A5B3FECC0}|final project Api.csproj|c:\\users\\lenovo\\desktop\\agial\\final project api\\models\\teacher_class.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{534D0321-7FA0-44A8-96E6-338A5B3FECC0}|final project Api.csproj|solutionrelative:models\\teacher_class.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,32 +18,32 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "20240923001026_init.cs",
-              "DocumentMoniker": "D:\\Graduation project\\ra\\final project Api\\Migrations\\20240923001026_init.cs",
-              "RelativeDocumentMoniker": "Migrations\\20240923001026_init.cs",
-              "ToolTip": "D:\\Graduation project\\ra\\final project Api\\Migrations\\20240923001026_init.cs",
-              "RelativeToolTip": "Migrations\\20240923001026_init.cs",
-              "ViewState": "AgIAACQBAAAAAAAAAAAAADIBAAAlAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "Teacher_Class.cs",
+              "DocumentMoniker": "C:\\Users\\LENOVO\\Desktop\\Agial\\final project Api\\Models\\Teacher_Class.cs",
+              "RelativeDocumentMoniker": "Models\\Teacher_Class.cs",
+              "ToolTip": "C:\\Users\\LENOVO\\Desktop\\Agial\\final project Api\\Models\\Teacher_Class.cs",
+              "RelativeToolTip": "Models\\Teacher_Class.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAAA4AAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-23T00:10:26.938Z",
+              "WhenOpened": "2024-09-25T22:16:41.232Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AgialContext.cs",
-              "DocumentMoniker": "D:\\Graduation project\\ra\\final project Api\\Models\\AgialContext.cs",
-              "RelativeDocumentMoniker": "Models\\AgialContext.cs",
-              "ToolTip": "D:\\Graduation project\\ra\\final project Api\\Models\\AgialContext.cs",
-              "RelativeToolTip": "Models\\AgialContext.cs",
-              "ViewState": "AgIAAEoAAAAAAAAAAAAAwFYAAAAJAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "ClassController.cs",
+              "DocumentMoniker": "C:\\Users\\LENOVO\\Desktop\\Agial\\final project Api\\Controllers\\ClassController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ClassController.cs",
+              "ToolTip": "C:\\Users\\LENOVO\\Desktop\\Agial\\final project Api\\Controllers\\ClassController.cs",
+              "RelativeToolTip": "Controllers\\ClassController.cs",
+              "ViewState": "AgIAAEYAAAAAAAAAAAAewFAAAABfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-23T00:09:15.342Z",
+              "WhenOpened": "2024-09-23T14:51:07.597Z",
               "EditorCaption": ""
             }
           ]

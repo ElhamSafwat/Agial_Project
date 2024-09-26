@@ -398,7 +398,6 @@ namespace final_project_Api.Migrations
                     Student_Class_Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Student_ID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    studentsUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Class_ID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -410,8 +409,8 @@ namespace final_project_Api.Migrations
                         principalTable: "classes",
                         principalColumn: "Class_ID");
                     table.ForeignKey(
-                        name: "FK_student_classes_students_studentsUserId",
-                        column: x => x.studentsUserId,
+                        name: "FK_student_classes_students_Student_ID",
+                        column: x => x.Student_ID,
                         principalTable: "students",
                         principalColumn: "UserId");
                 });
@@ -602,9 +601,9 @@ namespace final_project_Api.Migrations
                 column: "Class_ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_student_classes_studentsUserId",
+                name: "IX_student_classes_Student_ID",
                 table: "student_classes",
-                column: "studentsUserId");
+                column: "Student_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_student_Exams_Exam_ID",

@@ -9,10 +9,13 @@ namespace final_project_Api.Models
         public int TC_ID { get; set; }
         [ForeignKey("Teacher")]
         public string? Teacher_ID { get; set; }
+        public int? Subject_ID { get; set; }
         public virtual Teacher? Teacher { get; set; }
-        [ForeignKey("Clas")]
+        [ForeignKey("Class")]
         public int? Class_ID { get; set; }
-        public virtual Class? Clas { get; set; }
+        public virtual Subject? Subjects { get; set; }
+        public virtual Class? Class { get; set; }
         public virtual ICollection<Session>? Sessions { get; set; }
+
     }
 }

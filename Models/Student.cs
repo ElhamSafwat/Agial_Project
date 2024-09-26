@@ -12,13 +12,13 @@ namespace final_project_Api.Models
 
         [Column(TypeName = "date")]
         public DateTime enrollmentDate { get; set; }
+        [RegularExpression("^(أبتدائي|أعدادي|ثانوي)$", ErrorMessage = "القيمه يجب ان تكون أبتدائي او اعدادي او ثانوي")]
+        public string Stage { get; set; }
+        public int Level {  get; set; }
 
-        // realation with parent table
         [ForeignKey("parent")]
         public string Parent_ID { get; set; }
         public virtual Parent parent { get; set; }
-
-        // realation with Student_Class table
         public virtual ICollection<Student_Class>? Student_Classes { get; set; }
 
         // realation with Payment table
