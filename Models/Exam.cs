@@ -13,6 +13,9 @@ namespace final_project_Api.Models
         public float End_Time { get; private set; }
         public int Min_Degree { get; set; }
         public int Max_Degree { get; set; }
+
+       public string class_name { get; set; }
+       public string subject_name { get; set; }
         [ForeignKey("Tech")]
         public string? Teacher_ID { get; set; }
         public virtual Teacher? Tech { get; set; }

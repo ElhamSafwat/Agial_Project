@@ -11,9 +11,13 @@ namespace final_project_Api.Models
         public string? Teacher_ID { get; set; } 
         public virtual Teacher? Teacher { get; set; }
         [ForeignKey("Parent")]
-        public string? Parent_ID { get; set; } 
+        public string? Parent_ID { get; set; }
+        [ForeignKey("Student")]
+        public string? Student_ID { get; set; }
+        public virtual Student? Student { get; set; }
         public virtual Parent? Parent { get; set; }
-
+        [Column(TypeName = "date")]
+        public DateTime date { get; set; }
         public string FeedBack { get; set; }
         public string From { get; set; }
 

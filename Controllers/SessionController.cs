@@ -404,12 +404,23 @@ namespace final_project_Api.Controllers
             try
             {
                 //create list from database that store it session that date less from this date
-                List<Session> list_deletes = await context.sessions.Where(s => DateOnly.FromDateTime(s.Date) <= dateTO).ToListAsync();
+                List<Session> list_deletes = await context.sessions.Include(s=>s.session_Students).Where(s => DateOnly.FromDateTime(s.Date) <= dateTO).ToListAsync();
                 if(list_deletes.Count <= 0 || list_deletes == null)
                 {
                     return NotFound("تلك التاريخ لا يوجد له حصص مسجله تسبقه من اجل حذفها حتي تلك تاريخ");
                 }
-            
+                // delete list of session_student for each obj list of list_deletes
+                foreach (var item in list_deletes)
+                {
+                    if (item.session_Students != null)
+                    {
+                        context.Session_Students.RemoveRange(item.session_Students);
+                        context.SaveChanges();
+                    }
+
+                }
+                
+
                 context.sessions.RemoveRange(list_deletes);
                 context.SaveChanges();
                 return Ok("تم الحذف بنجاح");
@@ -444,12 +455,18 @@ namespace final_project_Api.Controllers
 
             try
             {
-                Session sess = await context.sessions.FirstOrDefaultAsync(s => s.Session_ID == id);
+                // Session sess = await context.sessions.FirstOrDefaultAsync(s => s.Session_ID == id);
 
-
+                Session sess = await context.sessions.Include(s=>s.session_Students).FirstOrDefaultAsync(s => s.Session_ID == id);
                 if (sess == null)
                 {
                     return NotFound("من فضلك ادخل معرف صح لي حصصه التي تريد حذفها.");
+                }
+                // remove related session_Students
+                if (sess.session_Students != null)
+                {
+                    context.Session_Students.RemoveRange(sess.session_Students);
+                    context.SaveChanges();
                 }
 
                 context.sessions.Remove(sess);

@@ -331,7 +331,27 @@ namespace final_project_Api.Controllers
 
             // Remove related student_classes
             _context.student_classes.RemoveRange(classEntity.Student_Class);
+            // remove related session 
+            if (classEntity.Teacher_Class != null) 
+            {
+               List<int> tc_ids = classEntity.Teacher_Class.Select(t => t.TC_ID).ToList();
+                List<Session>delete_session = new List<Session>();
+                foreach (var item in tc_ids)
+                {
+                    var sessions = await _context.sessions.Where(s => s.TC_ID ==item).ToListAsync();
+                    if (sessions != null)
+                    {
+                        delete_session.AddRange(sessions);
+                    }
+                }
+                if(delete_session.Count > 0)
+                {
+                    _context.sessions.RemoveRange(delete_session);
+                }
 
+            }
+            
+            
             // Remove related teacher_classes
             _context.teacher_Classes.RemoveRange(classEntity.Teacher_Class);
 

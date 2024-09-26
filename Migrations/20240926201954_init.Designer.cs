@@ -12,8 +12,8 @@ using final_project_Api.Models;
 namespace final_project_Api.Migrations
 {
     [DbContext(typeof(AgialContext))]
-    [Migration("20240926104112_EditSubject1")]
-    partial class EditSubject1
+    [Migration("20240926201954_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -287,6 +287,14 @@ namespace final_project_Api.Migrations
                     b.Property<string>("Teacher_ID")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("class_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("subject_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Exam_ID");
 
                     b.HasIndex("Teacher_ID");
@@ -323,12 +331,20 @@ namespace final_project_Api.Migrations
                     b.Property<string>("Parent_ID")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Student_ID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Teacher_ID")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("date");
 
                     b.HasKey("Parent_Teacher_Feedback_Id");
 
                     b.HasIndex("Parent_ID");
+
+                    b.HasIndex("Student_ID");
 
                     b.HasIndex("Teacher_ID");
 
@@ -388,7 +404,8 @@ namespace final_project_Api.Migrations
 
                     b.Property<string>("Material_Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Session_Title");
 
                     b.Property<string>("Room")
                         .IsRequired()
@@ -448,9 +465,16 @@ namespace final_project_Api.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
                     b.Property<string>("Parent_ID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Stage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("enrollmentDate")
                         .HasColumnType("date");
@@ -474,13 +498,16 @@ namespace final_project_Api.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Student_ID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("studentsUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Student_Class_Id");
 
                     b.HasIndex("Class_ID");
 
-                    b.HasIndex("Student_ID");
+                    b.HasIndex("studentsUserId");
 
                     b.ToTable("student_classes");
                 });
@@ -528,6 +555,9 @@ namespace final_project_Api.Migrations
 
                     b.Property<string>("Teacher_ID")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("date");
 
                     b.HasKey("Student_Teacher_Feedback_Id");
 
@@ -724,11 +754,17 @@ namespace final_project_Api.Migrations
                         .WithMany("Parent_Teacher_feadback")
                         .HasForeignKey("Parent_ID");
 
+                    b.HasOne("final_project_Api.Models.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("Student_ID");
+
                     b.HasOne("final_project_Api.Models.Teacher", "Teacher")
                         .WithMany("Parent_Teacher_FeedBacks")
                         .HasForeignKey("Teacher_ID");
 
                     b.Navigation("Parent");
+
+                    b.Navigation("Student");
 
                     b.Navigation("Teacher");
                 });
@@ -793,15 +829,15 @@ namespace final_project_Api.Migrations
 
             modelBuilder.Entity("final_project_Api.Models.Student_Class", b =>
                 {
-                    b.HasOne("final_project_Api.Models.Class", "classes")
+                    b.HasOne("final_project_Api.Models.Class", "classs")
                         .WithMany("Student_Class")
                         .HasForeignKey("Class_ID");
 
                     b.HasOne("final_project_Api.Models.Student", "students")
                         .WithMany("Student_Classes")
-                        .HasForeignKey("Student_ID");
+                        .HasForeignKey("studentsUserId");
 
-                    b.Navigation("classes");
+                    b.Navigation("classs");
 
                     b.Navigation("students");
                 });

@@ -284,6 +284,14 @@ namespace final_project_Api.Migrations
                     b.Property<string>("Teacher_ID")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("class_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("subject_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Exam_ID");
 
                     b.HasIndex("Teacher_ID");
@@ -320,12 +328,20 @@ namespace final_project_Api.Migrations
                     b.Property<string>("Parent_ID")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Student_ID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Teacher_ID")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("date");
 
                     b.HasKey("Parent_Teacher_Feedback_Id");
 
                     b.HasIndex("Parent_ID");
+
+                    b.HasIndex("Student_ID");
 
                     b.HasIndex("Teacher_ID");
 
@@ -481,14 +497,14 @@ namespace final_project_Api.Migrations
                     b.Property<string>("Student_ID")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Student_ID")
+                    b.Property<string>("studentsUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Student_Class_Id");
 
                     b.HasIndex("Class_ID");
 
-                    b.HasIndex("Student_ID");
+                    b.HasIndex("studentsUserId");
 
                     b.ToTable("student_classes");
                 });
@@ -536,6 +552,9 @@ namespace final_project_Api.Migrations
 
                     b.Property<string>("Teacher_ID")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("date");
 
                     b.HasKey("Student_Teacher_Feedback_Id");
 
@@ -732,11 +751,17 @@ namespace final_project_Api.Migrations
                         .WithMany("Parent_Teacher_feadback")
                         .HasForeignKey("Parent_ID");
 
+                    b.HasOne("final_project_Api.Models.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("Student_ID");
+
                     b.HasOne("final_project_Api.Models.Teacher", "Teacher")
                         .WithMany("Parent_Teacher_FeedBacks")
                         .HasForeignKey("Teacher_ID");
 
                     b.Navigation("Parent");
+
+                    b.Navigation("Student");
 
                     b.Navigation("Teacher");
                 });
@@ -807,7 +832,7 @@ namespace final_project_Api.Migrations
 
                     b.HasOne("final_project_Api.Models.Student", "students")
                         .WithMany("Student_Classes")
-                        .HasForeignKey("Student_ID");
+                        .HasForeignKey("studentsUserId");
 
                     b.Navigation("classs");
 

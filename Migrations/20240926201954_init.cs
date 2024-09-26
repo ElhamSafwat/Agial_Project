@@ -58,6 +58,7 @@ namespace final_project_Api.Migrations
                     Class_ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Stage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Level = table.Column<int>(type: "int", nullable: false),
                     Class_Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -251,6 +252,8 @@ namespace final_project_Api.Migrations
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     enrollmentDate = table.Column<DateTime>(type: "date", nullable: false),
+                    Stage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Level = table.Column<int>(type: "int", nullable: false),
                     Parent_ID = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -281,6 +284,8 @@ namespace final_project_Api.Migrations
                     End_Time = table.Column<float>(type: "real", nullable: false),
                     Min_Degree = table.Column<int>(type: "int", nullable: false),
                     Max_Degree = table.Column<int>(type: "int", nullable: false),
+                    class_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    subject_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Teacher_ID = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -294,39 +299,15 @@ namespace final_project_Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "parent_Teacher_Feedbacks",
-                columns: table => new
-                {
-                    Parent_Teacher_Feedback_Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Teacher_ID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Parent_ID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    FeedBack = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    From = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_parent_Teacher_Feedbacks", x => x.Parent_Teacher_Feedback_Id);
-                    table.ForeignKey(
-                        name: "FK_parent_Teacher_Feedbacks_parent_Parent_ID",
-                        column: x => x.Parent_ID,
-                        principalTable: "parent",
-                        principalColumn: "UserId");
-                    table.ForeignKey(
-                        name: "FK_parent_Teacher_Feedbacks_teachers_Teacher_ID",
-                        column: x => x.Teacher_ID,
-                        principalTable: "teachers",
-                        principalColumn: "UserId");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "teacher_Classes",
                 columns: table => new
                 {
                     TC_ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Teacher_ID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Class_ID = table.Column<int>(type: "int", nullable: true)
+                    Subject_ID = table.Column<int>(type: "int", nullable: true),
+                    Class_ID = table.Column<int>(type: "int", nullable: true),
+                    SubjectsSubject_ID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -336,6 +317,11 @@ namespace final_project_Api.Migrations
                         column: x => x.Class_ID,
                         principalTable: "classes",
                         principalColumn: "Class_ID");
+                    table.ForeignKey(
+                        name: "FK_teacher_Classes_subjects_SubjectsSubject_ID",
+                        column: x => x.SubjectsSubject_ID,
+                        principalTable: "subjects",
+                        principalColumn: "Subject_ID");
                     table.ForeignKey(
                         name: "FK_teacher_Classes_teachers_Teacher_ID",
                         column: x => x.Teacher_ID,
@@ -361,6 +347,39 @@ namespace final_project_Api.Migrations
                         principalTable: "teachers",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "parent_Teacher_Feedbacks",
+                columns: table => new
+                {
+                    Parent_Teacher_Feedback_Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Teacher_ID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Parent_ID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Student_ID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    date = table.Column<DateTime>(type: "date", nullable: false),
+                    FeedBack = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    From = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_parent_Teacher_Feedbacks", x => x.Parent_Teacher_Feedback_Id);
+                    table.ForeignKey(
+                        name: "FK_parent_Teacher_Feedbacks_parent_Parent_ID",
+                        column: x => x.Parent_ID,
+                        principalTable: "parent",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_parent_Teacher_Feedbacks_students_Student_ID",
+                        column: x => x.Student_ID,
+                        principalTable: "students",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_parent_Teacher_Feedbacks_teachers_Teacher_ID",
+                        column: x => x.Teacher_ID,
+                        principalTable: "teachers",
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -397,7 +416,8 @@ namespace final_project_Api.Migrations
                 {
                     Student_Class_Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Student_ID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Student_ID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                   
                     Class_ID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -409,7 +429,7 @@ namespace final_project_Api.Migrations
                         principalTable: "classes",
                         principalColumn: "Class_ID");
                     table.ForeignKey(
-                        name: "FK_student_classes_students_Student_ID",
+                        name: "FK_student_classes_students_Student_ID ",
                         column: x => x.Student_ID,
                         principalTable: "students",
                         principalColumn: "UserId");
@@ -423,7 +443,8 @@ namespace final_project_Api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Teacher_ID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Student_ID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Feedback = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Feedback = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    date = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -471,7 +492,7 @@ namespace final_project_Api.Migrations
                 {
                     Session_ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Material_Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Session_Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "date", nullable: false),
                     Room = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     End_Time = table.Column<float>(type: "real", nullable: false),
@@ -566,6 +587,11 @@ namespace final_project_Api.Migrations
                 column: "Parent_ID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_parent_Teacher_Feedbacks_Student_ID",
+                table: "parent_Teacher_Feedbacks",
+                column: "Student_ID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_parent_Teacher_Feedbacks_Teacher_ID",
                 table: "parent_Teacher_Feedbacks",
                 column: "Teacher_ID");
@@ -634,6 +660,11 @@ namespace final_project_Api.Migrations
                 name: "IX_teacher_Classes_Class_ID",
                 table: "teacher_Classes",
                 column: "Class_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_teacher_Classes_SubjectsSubject_ID",
+                table: "teacher_Classes",
+                column: "SubjectsSubject_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_teacher_Classes_Teacher_ID",

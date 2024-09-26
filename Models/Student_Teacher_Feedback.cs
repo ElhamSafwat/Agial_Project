@@ -14,5 +14,7 @@ namespace final_project_Api.Models
         public string? Student_ID { get; set; }  
         public virtual Student? Student { get; set; }
         public string Feedback { get; set; }
+        [Column(TypeName = "date")]
+        public DateTime date { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace final_project_Api.Models
     {
         [Key]
         public int Student_Class_Id { get; set; }
-        [ForeignKey(" students")]
+        [ForeignKey("students")]
         public string? Student_ID {  get; set; }
         public virtual Student? students { get; set; }
         [ForeignKey("classs")]
