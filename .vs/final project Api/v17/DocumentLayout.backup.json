@@ -70,7 +70,8 @@
               "RelativeToolTip": "Controllers\\TeacherController.cs",
               "ViewState": "AgIAADQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-29T19:38:32.318Z"
+              "WhenOpened": "2024-09-29T19:38:32.318Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -82,7 +83,8 @@
               "RelativeToolTip": "DTO\\Get_ExamDTO.cs",
               "ViewState": "AgIAAAQAAAAAAAAAAAAAAAoAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-29T18:53:49.535Z"
+              "WhenOpened": "2024-09-29T18:53:49.535Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -94,7 +96,8 @@
               "RelativeToolTip": "DTO\\Get_ExamByTechIDDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-29T18:53:40.326Z"
+              "WhenOpened": "2024-09-29T18:53:40.326Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -106,7 +109,8 @@
               "RelativeToolTip": "Models\\Exam.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAwwA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-29T18:46:42.477Z"
+              "WhenOpened": "2024-09-29T18:46:42.477Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -118,7 +122,8 @@
               "RelativeToolTip": "Models\\Class.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-29T18:46:31.695Z"
+              "WhenOpened": "2024-09-29T18:46:31.695Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -140,7 +145,7 @@
               "RelativeDocumentMoniker": "Controllers\\ExamController.cs",
               "ToolTip": "D:\\Graduation project\\final\\Agial_Project\\Controllers\\ExamController.cs",
               "RelativeToolTip": "Controllers\\ExamController.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAqwFsBAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAiwFsBAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-27T22:58:40.057Z",
               "EditorCaption": ""

@@ -125,6 +125,90 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "final_project_Api.Controllers.ExamController",
+    "Method": "GetExam",
+    "RelativePath": "api/Exam",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.ExamController",
+    "Method": "AddExam",
+    "RelativePath": "api/Exam",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "create_ExamDTO",
+        "Type": "final_project_Api.DTO.Create_ExamDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.ExamController",
+    "Method": "Edit_Exam",
+    "RelativePath": "api/Exam/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "edit_ExamDTO",
+        "Type": "final_project_Api.DTO.Edit_ExamDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.ExamController",
+    "Method": "DeleteExam",
+    "RelativePath": "api/Exam/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.ExamController",
+    "Method": "Get_Exams_By_Date_Range",
+    "RelativePath": "api/Exam/from/{startDate}/to/{endDate}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "startDate",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "final_project_Api.Controllers.ParentController",
     "Method": "GetParents",
     "RelativePath": "api/Parent",
@@ -438,7 +522,7 @@
       },
       {
         "Name": "studentDTO",
-        "Type": "final_project_Api.DTO.GetStudentDTO",
+        "Type": "final_project_Api.DTO.Edit_StudentDTO",
         "IsRequired": true
       }
     ],
@@ -625,6 +709,80 @@
     "Parameters": [
       {
         "Name": "userId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.ExamController",
+    "Method": "Get_Exam_By_Date",
+    "RelativePath": "date/{date}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "date",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.ExamController",
+    "Method": "GetExams",
+    "RelativePath": "GetExamsbyClassName",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "className",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "stage",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "level",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.ExamController",
+    "Method": "Get_Exam_By_ID",
+    "RelativePath": "id/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.ExamController",
+    "Method": "Get_Exam_By_Teacher_ID",
+    "RelativePath": "Teacher/{Teacher_id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Teacher_id",
         "Type": "System.String",
         "IsRequired": true
       }
