@@ -1,0 +1,11 @@
+.vs/
+bin/
+obj/
+Properties/
+appsettings.Development.json
+final project Api.csproj
+final project Api.csproj.user
+
+appsettings.json
+final project Api.http
+
