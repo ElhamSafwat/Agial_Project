@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "E:\\ITI_full_stack_.net\\END\\Agial_Project\\Agial_Project\\final project Api.csproj": {}
+    "C:\\Users\\LENOVO\\Desktop\\Agial\\final project Api\\final project Api.csproj": {}
   },
   "projects": {
-    "E:\\ITI_full_stack_.net\\END\\Agial_Project\\Agial_Project\\final project Api.csproj": {
+    "C:\\Users\\LENOVO\\Desktop\\Agial\\final project Api\\final project Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\ITI_full_stack_.net\\END\\Agial_Project\\Agial_Project\\final project Api.csproj",
+        "projectUniqueName": "C:\\Users\\LENOVO\\Desktop\\Agial\\final project Api\\final project Api.csproj",
         "projectName": "final project Api",
-        "projectPath": "E:\\ITI_full_stack_.net\\END\\Agial_Project\\Agial_Project\\final project Api.csproj",
-        "packagesPath": "C:\\Users\\HFCS\\.nuget\\packages\\",
-        "outputPath": "E:\\ITI_full_stack_.net\\END\\Agial_Project\\Agial_Project\\obj\\",
+        "projectPath": "C:\\Users\\LENOVO\\Desktop\\Agial\\final project Api\\final project Api.csproj",
+        "packagesPath": "C:\\Users\\LENOVO\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\LENOVO\\Desktop\\Agial\\final project Api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\HFCS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\LENOVO\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -94,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

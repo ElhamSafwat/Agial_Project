@@ -1,0 +1,21 @@
+# Ignoring Visual Studio files
+.vs/
+bin/
+obj/
+
+# Ignoring configuration files
+appsettings.json
+
+# Ignoring debug files
+*.pdb
+*.exe
+*.dll
+
+# Ignoring other common temporary files
+*.log
+*.tmp
+
+# Ignoring user-specific files
+*.suo
+*.user
+*.json

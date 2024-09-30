@@ -16,6 +16,322 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "final_project_Api.Controllers.AssignmentController",
+    "Method": "GetAllAssignments",
+    "RelativePath": "api/Assignment",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[final_project_Api.DTO.AssignmentDTO, final project Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.AssignmentController",
+    "Method": "DeleteAssignment",
+    "RelativePath": "api/Assignment/{sessionId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sessionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.AssignmentController",
+    "Method": "UpdateAssignment",
+    "RelativePath": "api/Assignment/{sessionId}/{studentId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sessionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "studentId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "assignment",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.AssignmentController",
+    "Method": "AddAssignmentToSession",
+    "RelativePath": "api/Assignment/AddAssignmentToSession/{sessionId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sessionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "assignment",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.AssignmentController",
+    "Method": "AddStudentDegree",
+    "RelativePath": "api/Assignment/AddStudentDegree",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sessionId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "studentId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "degree",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.AssignmentController",
+    "Method": "GetAssignmentsByClassAndSession",
+    "RelativePath": "api/Assignment/ByClassAndSession/{sessionId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sessionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[final_project_Api.DTO.AssignmentDTO, final project Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.AssignmentController",
+    "Method": "GetAssignmentsByDate",
+    "RelativePath": "api/Assignment/ByDate/{date}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "date",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[final_project_Api.DTO.AssignmentDTO, final project Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.AttendanceController",
+    "Method": "GetSessionStudents",
+    "RelativePath": "api/Attendance",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[final_project_Api.DTO.SessionStudentDTO, final project Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.AttendanceController",
+    "Method": "GetSessionStudent",
+    "RelativePath": "api/Attendance/{sessionId}/{studentId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sessionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "studentId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "final_project_Api.DTO.SessionStudentDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.AttendanceController",
+    "Method": "PutSessionStudent",
+    "RelativePath": "api/Attendance/{sessionId}/{studentId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sessionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "studentId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "sessionStudentDTO",
+        "Type": "final_project_Api.DTO.SessionStudentDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.AttendanceController",
+    "Method": "GetStudentsByClass",
+    "RelativePath": "api/Attendance/GetStudentsByClass/{classId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "classId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[final_project_Api.DTO.StudentAttendanceDTO, final project Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.AttendanceController",
+    "Method": "RecordAttendance",
+    "RelativePath": "api/Attendance/RecordAttendance/{classId}/{sessionId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "classId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "sessionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "attendanceRecords",
+        "Type": "System.Collections.Generic.List\u00601[[final_project_Api.DTO.AttendanceDTO, final project Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "final_project_Api.Controllers.AttendanceController",
+    "Method": "RecordAttendance",
+    "RelativePath": "api/Attendance/RecordAttendance/{sessionId}/{studentId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sessionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "studentId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "attendance",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "final_project_Api.Controllers.ClassController",
     "Method": "GetClasses",
     "RelativePath": "api/Class",
