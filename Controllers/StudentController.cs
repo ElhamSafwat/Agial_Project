@@ -1,5 +1,6 @@
 ﻿using final_project_Api.DTO;
 using final_project_Api.Models;
+using final_project_Api.Parentdtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,20 +25,19 @@ namespace final_project_Api.Controllers
         [HttpGet]
         public IActionResult getStudents()
         {
-            List<Student> students= context.students.Include(s => s.User).ToList();
+            List<Student> students= context.students.Include(s => s.User).Include(s => s.parent.User).ToList();
             List<GetStudentDTO> studentDTOs = new List<GetStudentDTO>();
             foreach (Student stud in students)
             {
                 GetStudentDTO studDTO = new GetStudentDTO();
                 studDTO.Student_Id=stud.UserId;
                 studDTO.fullName = stud.User.Full_Name;
-                studDTO.Student_Name = stud.User.UserName;
                 studDTO.Student_Email = stud.User.Email;
                 studDTO.Phone_Number = stud.User.PhoneNumber;
                 studDTO.enrollmentDate = stud.enrollmentDate;
                 studDTO.Stage = stud.Stage;
                 studDTO.Level = stud.Level;
-                studDTO.Parent_ID= stud.Parent_ID;
+                studDTO.Parent_Name = stud.parent.User.Full_Name;
                 studentDTOs.Add(studDTO);
             }
             return Ok(studentDTOs);
@@ -48,7 +48,7 @@ namespace final_project_Api.Controllers
         [HttpGet("{id}")]
         public IActionResult getStudentById(string id)
         {
-            var student=context.students.Include(s => s.User).FirstOrDefault(s=>s.UserId==id);
+            var student=context.students.Include(s => s.User).Include(s=>s.parent.User).FirstOrDefault(s=>s.UserId==id);
             if (student == null)
             {
                 return NotFound();
@@ -56,23 +56,23 @@ namespace final_project_Api.Controllers
             GetStudentDTO studentDTO = new GetStudentDTO
             {
                 Student_Id=student.UserId,
-                Student_Name=student.User.Full_Name,
+                fullName = student.User.Full_Name,
                 Student_Email=student.User.Email,
                 Phone_Number=student.User.PhoneNumber,
                 enrollmentDate=student.enrollmentDate,
                 Stage=student.Stage,
                 Level=student.Level,
-                Parent_ID=student.Parent_ID,
+                Parent_Name=student.parent.User.Full_Name
             };
             return Ok(studentDTO);
         }
         #endregion
 
-        #region Get Student By Name
+        #region Get Student By Name (UserName)
         [HttpGet("{name:alpha}")]
         public IActionResult getStudentByName(string name)
         {
-            var student = context.students.Include(s => s.User).FirstOrDefault(s => s.User.UserName==name);
+            var student = context.students.Include(s => s.User).Include(s => s.parent.User).FirstOrDefault(s => s.User.UserName==name);
             if (student == null)
             {
                 return NotFound();
@@ -80,13 +80,13 @@ namespace final_project_Api.Controllers
             GetStudentDTO studentDTO = new GetStudentDTO
             {
                 Student_Id = student.UserId,
-                Student_Name = student.User.Full_Name,
+                fullName = student.User.Full_Name,
                 Student_Email = student.User.Email,
                 Phone_Number = student.User.PhoneNumber,
                 enrollmentDate = student.enrollmentDate,
-                Stage=student.Stage,
-                Level=student.Level,
-                Parent_ID = student.Parent_ID,
+                Stage = student.Stage,
+                Level = student.Level,
+                Parent_Name = student.parent.User.Full_Name
             };
             return Ok(studentDTO);
         }
@@ -119,14 +119,14 @@ namespace final_project_Api.Controllers
             // تحقق من Stage و Level
             if (AddStudDto.Stage == "أبتدائي")
             {
-                if (AddStudDto.Level < 1 && AddStudDto.Level > 7)
+                if (AddStudDto.Level < 1 || AddStudDto.Level > 6)
                 {
                     return BadRequest("Level must be between 1 and 6 for أبتدائي stage.");
                 }
             }
             else if (AddStudDto.Stage == "أعدادي" || AddStudDto.Stage == "ثانوي")
             {
-                if (AddStudDto.Level < 1 && AddStudDto.Level > 4)
+                if (AddStudDto.Level < 1 || AddStudDto.Level > 3)
                 {
                     return BadRequest($"Level must be between 1 and 3 for {AddStudDto.Stage} stage.");
                 }
@@ -192,6 +192,7 @@ namespace final_project_Api.Controllers
                     context.student_Exams.RemoveRange(student.Student_Exams);
                 }
                 context.students.Remove(student);
+
                 var user = await userManager.FindByIdAsync(id);
                 if (user != null)
                 {
@@ -201,60 +202,69 @@ namespace final_project_Api.Controllers
                         return BadRequest("Error deleting user from Identity.");
                     }
                 }
+                await context.SaveChangesAsync();
+                return Ok("تم حذف الطالب بنجاح");
             }
             catch (Exception ex)
             {
                 return StatusCode(500, "An error occurred while deleting the student: " + ex.Message);
             }
-            await context.SaveChangesAsync();
-            return NoContent();
+           
         }
         #endregion
 
         #region Edit Student
         [HttpPut("{id}")]
-        public IActionResult EditStudent(string id, GetStudentDTO studentDTO)
+        public async Task<IActionResult> EditStudent(string id, Edit_StudentDTO studentDTO)
         {
-            
-            var student = context.students.Include(s => s.User).FirstOrDefault(s => s.UserId == id);
-            if (student == null)
-            {
-                return NotFound("Student not valid");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            // تحقق من Stage و Level
-            if (studentDTO.Stage == "أبتدائي")
-            {
-                if (studentDTO.Level < 1 && studentDTO.Level > 7)
-                {
-                    return BadRequest("Level must be between 1 and 6 for أبتدائي stage.");
-                }
-            }
-            else if (studentDTO.Stage == "أعدادي" || studentDTO.Stage == "ثانوي")
-            {
-                if (studentDTO.Level < 1 && studentDTO.Level > 4)
-                {
-                    return BadRequest($"Level must be between 1 and 3 for {studentDTO.Stage} stage.");
-                }
-            }
-            else
-            {
-                return BadRequest($"Invalid stage '{studentDTO.Stage}'. Must be 'أبتدائي', 'أعدادي', or 'ثانوي'.");
-            }
-
-            student.User.Full_Name = studentDTO.Student_Name;
-            student.User.Email = studentDTO.Student_Email;
-            student.User.PhoneNumber = studentDTO.Phone_Number;
-            student.enrollmentDate = studentDTO.enrollmentDate;
-            student.Stage = studentDTO.Stage;
-            student.Level = studentDTO.Level;
-            student.Parent_ID = studentDTO.Parent_ID;
             try
             {
+                var student =await context.students.Include(s => s.User).FirstOrDefaultAsync(s => s.UserId == id);
+                if (student == null)
+                {
+                    return NotFound("هذا الطالب غير موجود من فضلك ادخل الرقم الصحيح");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+                // تحقق من Stage و Level
+                if (studentDTO.Stage == "أبتدائي")
+                {
+                    if (studentDTO.Level < 1 || studentDTO.Level > 7)
+                    {
+                        return BadRequest("المستوي يجب ان يكون من 1 الي 6 الي المرحله الابتدائيه");
+                    }
+                }
+                else if (studentDTO.Stage == "أعدادي" || studentDTO.Stage == "ثانوي")
+                {
+                    if (studentDTO.Level < 1 || studentDTO.Level > 4)
+                    {
+                        return BadRequest($"المستوي يجب ان يكون بين 1 و 3 للمرحله {studentDTO.Stage}.");
+                    }
+                }
+                else
+                {
+                    return BadRequest($"غير صحيح  '{studentDTO.Stage}'. يجب ان تكون أبتدائي', 'أعدادي' او 'ثانوي'");
+                }
+
+                student.User.Full_Name = studentDTO.Student_Name;
+                student.User.Email = studentDTO.Student_Email;
+                student.User.PhoneNumber = studentDTO.Phone_Number;
+                student.Stage = studentDTO.Stage;
+                student.Level = studentDTO.Level;
+
+                if (!string.IsNullOrEmpty(studentDTO.New_Password))
+                {
+                    var passwordResult = await userManager.ChangePasswordAsync(student.User, studentDTO.Old_Password, studentDTO.New_Password);
+
+                    if (!passwordResult.Succeeded)
+                    {
+                        return BadRequest(passwordResult.Errors);
+                    }
+                }
+            
                 context.SaveChanges();
             }
             catch (DbUpdateException ex)
@@ -266,6 +276,5 @@ namespace final_project_Api.Controllers
 
         #endregion
 
-        
     }
 }
