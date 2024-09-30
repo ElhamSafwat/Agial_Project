@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace final_project_Api.DTO
+﻿namespace final_project_Api.DTO
 {
-    public class AddStudentDTo
+    public class Create_StudentWithParent
     {
         public string Student_Name { get; set; }
         public string fullName { get; set; }
@@ -13,6 +11,5 @@ namespace final_project_Api.DTO
         public DateTime enrollmentDate { get; set; }
         public string Stage { get; set; }
         public int Level { get; set; }
-        public string Parent_ID { get; set; }
     }
 }

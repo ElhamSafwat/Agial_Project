@@ -10,7 +10,7 @@ namespace final_project_Api.Models
         [Column(TypeName = "date")]
         public DateTime Exam_Date { get; set; }
         public float Start_Time { get; set; }
-        public float End_Time { get; private set; }
+        public float End_Time { get; set; }
         public int Min_Degree { get; set; }
         public int Max_Degree { get; set; }
 
