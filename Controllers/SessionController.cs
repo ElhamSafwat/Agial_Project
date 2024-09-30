@@ -114,7 +114,7 @@ namespace final_project_Api.Controllers
                         }
                         bool test_endtime = (session1.End_Time > 0 && session1.End_Time <= 12);
                         bool test_starttime = (session1.Start_Time > 0 && session1.Start_Time <= 12);
-                        if (session1.Date >= DateTime.Now && test_endtime
+                        if (DateOnly.FromDateTime(session1.Date) >= DateOnly.FromDateTime(DateTime.Now )&& test_endtime
                             && test_starttime)
                         {
                             sessionsadd.Add(session1);
@@ -211,7 +211,7 @@ namespace final_project_Api.Controllers
                         Get_Sessions sessions = new Get_Sessions();
                         sessions.Session_Title = item.Material_Name;
                         sessions.Session_ID = item.Session_ID;
-                        sessions.Date = item.Date;
+                        sessions.Date = DateOnly.FromDateTime(item.Date);
                         sessions.Start_Time = item.Start_Time;
                         sessions.End_Time = item.End_Time;
                         sessions.Room = item.Room;
@@ -253,14 +253,14 @@ namespace final_project_Api.Controllers
 
 
         #region get sessions table for one class
-        [HttpGet("{class_name}")]
-        public async Task<IActionResult> getby_class_name(string class_name)
+        [HttpGet("{class_name}/{stage}/{level}")]
+        public async Task<IActionResult> getby_class_name(string class_name,string stage,int level)
         {
             
             try 
             
             {
-                int? class_id = context.classes.Where(c => c.Class_Name == class_name).Select(v => v.Class_ID).FirstOrDefault();
+                int? class_id = context.classes.Where(c => c.Class_Name == class_name&&c.Level==level&&c.Stage==stage).Select(v => v.Class_ID).FirstOrDefault();
 
                 if (class_id ==null|| class_id==0)
                 {
@@ -268,8 +268,10 @@ namespace final_project_Api.Controllers
                 }
                 
                    List<Session> DataFromDB = context.sessions.
-                    Where(s=>s.Teacher_Class.Class_ID== class_id).ToList();
-                    List<Get_Sessions>list = new List<Get_Sessions>();
+                    Where(s=>s.Teacher_Class.Class_ID== class_id&& 
+                    DateOnly.FromDateTime(s.Date)>= DateOnly.FromDateTime(DateTime.Now)).ToList();
+
+                List<Get_Sessions>list = new List<Get_Sessions>();
                   if(DataFromDB == null)
                   {
 
@@ -283,7 +285,7 @@ namespace final_project_Api.Controllers
                         data_display.Session_Title=session.Material_Name;
                         data_display.End_Time= session.End_Time;
                         data_display.Start_Time= session.Start_Time;
-                        data_display.Date=session.Date;
+                        data_display.Date= DateOnly.FromDateTime(session.Date);
                         data_display.Class_Name = class_name;
 
                         data_display.Room = session.Room;
@@ -354,7 +356,7 @@ namespace final_project_Api.Controllers
                         Get_Sessions sessions = new Get_Sessions();
                         sessions.Session_Title = item.Material_Name;
                         sessions.Session_ID = item.Session_ID;
-                        sessions.Date = item.Date;
+                        sessions.Date = DateOnly.FromDateTime(item.Date);
                         sessions.Start_Time = item.Start_Time;
                         sessions.End_Time = item.End_Time;
                         sessions.Room = item.Room;

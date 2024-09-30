@@ -54,14 +54,14 @@ namespace final_project_Api.Controllers
 
                 if (studentDTO.Stage == "أبتدائي")
                 {
-                    if (studentDTO.Level < 1 && studentDTO.Level > 7)
+                    if (studentDTO.Level < 1 || studentDTO.Level > 6)
                     {
                         errors.Add($"Level for student {studentDTO.Student_Name} must be between 1 and 6 for أبتدائي stage.");
                     }
                 }
                 else if (studentDTO.Stage == "أعدادي" || studentDTO.Stage == "ثانوي")
                 {
-                    if (studentDTO.Level < 1 && studentDTO.Level > 4)
+                    if (studentDTO.Level < 1 || studentDTO.Level > 3)
                     {
                         errors.Add($"Level for student {studentDTO.Student_Name} must be between 1 and 3 for {studentDTO.Stage} stage.");
                     }
@@ -98,6 +98,9 @@ namespace final_project_Api.Controllers
             var parent = new Parent { UserId = parentUser.Id };
             _context.parent.Add(parent);
 
+            // تعيين دور للأهل
+            await _userManager.AddToRoleAsync(parentUser, "Parent");
+
             // إضافة الطلاب
             foreach (var studentDTO in parentDTO.Students)
             {
@@ -126,6 +129,8 @@ namespace final_project_Api.Controllers
                     Parent_ID = parent.UserId
                 };
                 _context.students.Add(student);
+                // تعيين دور للطالب
+                await _userManager.AddToRoleAsync(studentUser, "Student");
             }
 
             // حفظ جميع التغييرات

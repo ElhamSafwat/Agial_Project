@@ -9,7 +9,7 @@ namespace final_project_Api.DTO
        
         public string? Session_Title { get; set; }
         
-        public DateTime Date { get; set; }
+        public DateOnly Date { get; set; }
         public string Room { get; set; }
         public float End_Time { get; set; }
         public float Start_Time { get; set; }

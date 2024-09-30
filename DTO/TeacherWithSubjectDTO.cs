@@ -7,6 +7,7 @@
         public string SubjectName { get; set; }
         public DateTime HireDate { get; set; }
         public string? phoneNumber {  get; set; }
+        public string stage { get; set; }
         public bool IsDelete { get; set; }
     }
 }
