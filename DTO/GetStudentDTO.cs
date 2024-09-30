@@ -5,7 +5,6 @@ namespace final_project_Api.DTO
     public class GetStudentDTO
     {
         public string Student_Id { get; set; }
-        public string Student_Name { get; set; }
         public string fullName { get; set; }
         public string Student_Email { get; set; }
         public string Phone_Number {  get; set; }
@@ -13,6 +12,6 @@ namespace final_project_Api.DTO
         public DateTime enrollmentDate { get; set; }
         public string Stage { get; set; }
         public int Level { get; set; }
-        public string Parent_ID { get; set; }
+        public string Parent_Name { get; set; }
     }
 }

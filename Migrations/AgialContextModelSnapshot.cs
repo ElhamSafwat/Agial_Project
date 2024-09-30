@@ -162,7 +162,7 @@ namespace final_project_Api.Migrations
 
                     b.HasKey("User_Id");
 
-                    b.ToTable("admins");
+                    b.ToTable("admins", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.ApplicationUser", b =>
@@ -255,7 +255,7 @@ namespace final_project_Api.Migrations
 
                     b.HasKey("Class_ID");
 
-                    b.ToTable("classes");
+                    b.ToTable("classes", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Exam", b =>
@@ -296,7 +296,7 @@ namespace final_project_Api.Migrations
 
                     b.HasIndex("Teacher_ID");
 
-                    b.ToTable("exam");
+                    b.ToTable("exam", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Parent", b =>
@@ -306,7 +306,7 @@ namespace final_project_Api.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("parent");
+                    b.ToTable("parent", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Parent_Teacher_Feedback", b =>
@@ -345,7 +345,7 @@ namespace final_project_Api.Migrations
 
                     b.HasIndex("Teacher_ID");
 
-                    b.ToTable("parent_Teacher_Feedbacks");
+                    b.ToTable("parent_Teacher_Feedbacks", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Payment", b =>
@@ -382,7 +382,7 @@ namespace final_project_Api.Migrations
 
                     b.HasIndex("Student_ID");
 
-                    b.ToTable("payments");
+                    b.ToTable("payments", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Session", b =>
@@ -422,7 +422,7 @@ namespace final_project_Api.Migrations
 
                     b.HasIndex("TC_ID");
 
-                    b.ToTable("sessions");
+                    b.ToTable("sessions", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Session_Student", b =>
@@ -454,7 +454,7 @@ namespace final_project_Api.Migrations
 
                     b.HasIndex("Student_ID");
 
-                    b.ToTable("Session_Students");
+                    b.ToTable("Session_Students", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Student", b =>
@@ -480,7 +480,7 @@ namespace final_project_Api.Migrations
 
                     b.HasIndex("Parent_ID");
 
-                    b.ToTable("students");
+                    b.ToTable("students", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Student_Class", b =>
@@ -506,7 +506,7 @@ namespace final_project_Api.Migrations
 
                     b.HasIndex("studentsUserId");
 
-                    b.ToTable("student_classes");
+                    b.ToTable("student_classes", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Student_Exam", b =>
@@ -532,7 +532,7 @@ namespace final_project_Api.Migrations
 
                     b.HasIndex("Student_ID");
 
-                    b.ToTable("student_Exams");
+                    b.ToTable("student_Exams", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Student_Teacher_Feedback", b =>
@@ -562,7 +562,7 @@ namespace final_project_Api.Migrations
 
                     b.HasIndex("Teacher_ID");
 
-                    b.ToTable("student_Teacher_Feedbacks");
+                    b.ToTable("student_Teacher_Feedbacks", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Subject", b =>
@@ -585,7 +585,7 @@ namespace final_project_Api.Migrations
 
                     b.HasKey("Subject_ID");
 
-                    b.ToTable("subjects");
+                    b.ToTable("subjects", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Teacher", b =>
@@ -606,7 +606,7 @@ namespace final_project_Api.Migrations
 
                     b.HasIndex("Subject_ID");
 
-                    b.ToTable("teachers");
+                    b.ToTable("teachers", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Teacher_Class", b =>
@@ -637,7 +637,7 @@ namespace final_project_Api.Migrations
 
                     b.HasIndex("Teacher_ID");
 
-                    b.ToTable("teacher_Classes");
+                    b.ToTable("teacher_Classes", (string)null);
                 });
 
             modelBuilder.Entity("final_project_Api.Models.Teacher_Stage", b =>
@@ -660,7 +660,7 @@ namespace final_project_Api.Migrations
 
                     b.HasIndex("Teacher_Id");
 
-                    b.ToTable("teacher_Stages");
+                    b.ToTable("teacher_Stages", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
