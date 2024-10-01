@@ -2,7 +2,7 @@
 {
     public class getsubjectDto
     {
-
+        public int id { get; set; }
         public string Subject_Name { get; set; }
 
         public string Description { get; set; }
