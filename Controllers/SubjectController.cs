@@ -38,6 +38,7 @@ namespace final_project_Api.Controllers
 
                 var subjectDtos = subjects.Select(s => new getsubjectDto
                 {
+                    id = s.Subject_ID,
                     Subject_Name = s.Subject_Name,
                     Description = s.Description,
                     TeacherNames = s.teachers != null && s.teachers.Any()
@@ -74,6 +75,7 @@ namespace final_project_Api.Controllers
 
                 var subjectDto = new getsubjectDto
                 {
+                    id = subject.Subject_ID,
                     Description = subject.Description,
                     Subject_Name = subject.Subject_Name,
                     TeacherNames = subject.teachers.Select(t => t.User.Full_Name).ToList()
