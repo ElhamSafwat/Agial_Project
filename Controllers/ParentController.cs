@@ -44,16 +44,22 @@ namespace final_project_Api.Controllers
             {
                 errors.Add("حساب ولي الامر موجود بالفعل .");
             }
-
+            if(await _userManager.FindByNameAsync(parentDTO.UserName)!=null)
+            {
+                errors.Add("اسم مستخدم مستخدم من قبل من فضلك اختار اسم مستخدم مختلف لي ولي امر .");
+            }
             // تحقق من بيانات الطلاب
             foreach (var studentDTO in parentDTO.Students)
             {
                 // تحقق من وجود البريد الإلكتروني طلاب
                 if (await _userManager.FindByEmailAsync(studentDTO.Student_Email) != null)
                 {
-                    errors.Add("حساب ولي الامر موجود بالفعل .");
+                    errors.Add($"حساب طالب  موجود بالفعل  من فضلك اختار حساب تاني طالب {studentDTO.fullName} .");
                 }
-
+                if (await _userManager.FindByNameAsync(studentDTO.Student_Name) != null)
+                {
+                    errors.Add($"{studentDTO.fullName}اسم مستخدم مستخدم من قبل من فضلك اختار اسم مستخدم مختلف لي طالب .");
+                }
                 if (studentDTO.Password != studentDTO.ConfirmPassword)
                 {
                     errors.Add($"كلمه المرور وكلمه تاكيد لحساب طالب غير متطابقين  {studentDTO.Student_Name}.");
@@ -140,9 +146,23 @@ namespace final_project_Api.Controllers
                 await _userManager.AddToRoleAsync(studentUser, "Student");
             }
 
+          
+            //check to sure this parent have student if not delete it
+            var have_student=await _context.parent.Include(parent => parent.Students).FirstOrDefaultAsync(p=>p.UserId== parent.UserId);
+            if (have_student != null)
+            {
+                if (have_student.Students == null)
+                {
+                    _context.parent.Remove(have_student);
+                    await _context.SaveChangesAsync();
+                    return BadRequest("لن تسطيع اضافه بيانات ولي لامر من فضلك ادخل بيانات ابنائه صحيحه ");
+
+                }
+
+            }
+            
             // حفظ جميع التغييرات
             await _context.SaveChangesAsync();
-
             return Ok(new { Message = "تم اضافه حساب ولي الامر وابنائه بنجاح" });
         }
         #endregion
