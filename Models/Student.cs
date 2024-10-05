@@ -26,6 +26,7 @@ namespace final_project_Api.Models
 
         // realation with Student_Teacher_FeedBack table
         public virtual ICollection<Student_Teacher_Feedback>? Students_Teachers_FeedBack { get; set; }
+        public virtual ICollection<Parent_Teacher_Feedback>? Parent_Teacher_Feedbacks { get; set; }
 
         // realation with Session_Student table
         public virtual ICollection<Session_Student>? Session_Students { get; set; }

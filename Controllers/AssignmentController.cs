@@ -27,7 +27,7 @@ namespace final_project_Api.Controllers
 
             if (session == null)
             {
-                return NotFound("Session not found.");
+                return NotFound(new { message = "Session not found." });
             }
 
             // Class_ID from Teacher_Class
@@ -41,7 +41,7 @@ namespace final_project_Api.Controllers
 
             if (studentsInClass == null || studentsInClass.Count == 0)
             {
-                return NotFound("No students found in the specified class.");
+                return NotFound(new { message = "No students found in the specified class." });
             }
 
             // إضافة Assignment جديد لكل طالب في الفصل
@@ -60,7 +60,7 @@ namespace final_project_Api.Controllers
             // Save changes
             await agialContext.SaveChangesAsync();
 
-            return Ok("Assignment added to all students in the class.");
+            return Ok(new { message = "Assignment added to all students in the class." });
         }
 
 
@@ -161,30 +161,30 @@ namespace final_project_Api.Controllers
 
             if (sessionStudent == null)
             {
-                return NotFound("Student not found in the specified session.");
+                return NotFound(new { message = "Student not found in the specified session." });
             }
 
             // التحقق من الدرجة المدخلة
             if (degree < 0 || degree >= 10) // بافتراض أن الدرجة تكون من 0 إلى 10
             {
-                return BadRequest("Degree must be between 0 and 10.");
+                return BadRequest(new { message = "Degree must be between 0 and 10." });
             }
 
             // تعيين الدرجة
             sessionStudent.Degree = degree;
- 
+            List<string> de = new List<string>();
             if (degree >= 5)
             {
-                Console.WriteLine($"Student {studentId} has successfully completed the assignment.");
+                de.Add( $"Student {studentId} has successfully completed the assignment.");
             }
             else
             {
-                Console.WriteLine($"Student {studentId} did not complete the assignment successfully. Please follow up.");
+                de.Add($"Student {studentId} did not complete the assignment successfully. Please follow up.");
             }
 
             await agialContext.SaveChangesAsync();
-
-            return Ok($"Degree {degree} added for student {studentId} in session {sessionId}.");
+            de.Add($"Degree {degree} added for student {studentId} in session {sessionId}.");
+            return Ok(de);
         }
     }
 }

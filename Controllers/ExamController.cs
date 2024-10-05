@@ -257,7 +257,7 @@ namespace final_project_Api.Controllers
                     return BadRequest("من فضلك ادخل الوقت الصحيح.");
                 }
                 // Validate class_name against Teacher_Class table
-                var teacherClass = await context.teacher_Classes.Include(tc => tc.Teacher.subject)
+                var teacherClass = await context.teacher_Classes
                     .FirstOrDefaultAsync(tc => tc.Teacher_ID == create_ExamDTO.Teacher_ID &&
                                                  tc.Class.Class_Name == create_ExamDTO.class_name);
 
@@ -269,6 +269,8 @@ namespace final_project_Api.Controllers
                 //{
                 //    return BadRequest("المادة المحددة لا يدرسها المدرس");
                 //}
+                //var subject = teacherClass.Teacher.Subject_ID;
+                var teacher_sub = context.teachers.Where(t => t.UserId == create_ExamDTO.Teacher_ID).Select(t => t.subject.Subject_Name).FirstOrDefault();
                 var exam = new Exam
                 {
                     Exam_Date = create_ExamDTO.Exam_Date,
@@ -277,14 +279,15 @@ namespace final_project_Api.Controllers
                     Min_Degree = create_ExamDTO.Min_Degree,
                     Max_Degree = create_ExamDTO.Max_Degree,
                     class_name = create_ExamDTO.class_name,
-                    subject_name = teacherClass.Teacher.subject.Subject_Name,
+                    subject_name = teacher_sub,
                     Teacher_ID = create_ExamDTO.Teacher_ID
                 };
 
                 context.exam.Add(exam);
                 await context.SaveChangesAsync();
+                return Ok(new { message = $"تم أضافه الامتحان ." });
 
-                return Ok(exam);
+                //return Ok(exam);
             }
             catch (Exception ex)
             {

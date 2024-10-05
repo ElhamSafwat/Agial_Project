@@ -1,10 +1,12 @@
-﻿using final_project_Api.DTO;
+﻿using final_project_Api.Admin_ClassDTO;
+using final_project_Api.DTO;
 using final_project_Api.Models;
 using final_project_Api.Parentdtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace final_project_Api.Controllers
 {
@@ -67,7 +69,7 @@ namespace final_project_Api.Controllers
             return Ok(studentDTO);
         }
         #endregion
-
+        
         #region Get Student By Name (UserName)
         [HttpGet("{name:alpha}")]
         public IActionResult getStudentByName(string name)
@@ -99,7 +101,15 @@ namespace final_project_Api.Controllers
             var existingUser = await userManager.FindByEmailAsync(AddStudDto.Student_Email);
             if (existingUser != null)
             {
-                return BadRequest("A student with this email already exists.");
+                return Ok(new { message = "A student with this email already exists." });
+            }
+            if (await userManager.FindByNameAsync(AddStudDto.Student_Name) != null)
+            {
+                return Ok (new { message = $"{AddStudDto.fullName}اسم مستخدم مستخدم من قبل من فضلك اختار اسم مستخدم مختلف لي طالب ." });
+            }
+            if (AddStudDto.Password != AddStudDto.ConfirmPassword)
+            {
+                return Ok(new {message= $"كلمه المرور وكلمه تاكيد لحساب طالب غير متطابقين  {AddStudDto.Student_Name}." });
             }
 
             var user = new ApplicationUser
@@ -116,24 +126,26 @@ namespace final_project_Api.Controllers
             {
                 return BadRequest(result.Errors);
             }
+            // تعيين دور للطالب
+            await userManager.AddToRoleAsync(user, "Student");
             // تحقق من Stage و Level
             if (AddStudDto.Stage == "أبتدائي")
             {
                 if (AddStudDto.Level < 1 || AddStudDto.Level > 6)
                 {
-                    return BadRequest("Level must be between 1 and 6 for أبتدائي stage.");
+                    return BadRequest(new { message = "Level must be between 1 and 6 for أبتدائي stage." });
                 }
             }
             else if (AddStudDto.Stage == "أعدادي" || AddStudDto.Stage == "ثانوي")
             {
                 if (AddStudDto.Level < 1 || AddStudDto.Level > 3)
                 {
-                    return BadRequest($"Level must be between 1 and 3 for {AddStudDto.Stage} stage.");
+                    return BadRequest(new { message = $"Level must be between 1 and 3 for {AddStudDto.Stage} stage." });
                 }
             }
             else
             {
-                return BadRequest($"Invalid stage '{AddStudDto.Stage}'. Must be 'أبتدائي', 'أعدادي', or 'ثانوي'.");
+                return BadRequest(new { message = $"Invalid stage '{AddStudDto.Stage}'. Must be 'أبتدائي', 'أعدادي', or 'ثانوي'." });
             }
             var student = new Student
             {
@@ -144,8 +156,9 @@ namespace final_project_Api.Controllers
                 Parent_ID =AddStudDto.Parent_ID
             };
             context.students.Add(student);
+           
             await context.SaveChangesAsync();
-            return Ok("Student created successfully..");
+            return Ok(new { message = "Student created successfully.." });
         }
         #endregion
 
@@ -160,6 +173,7 @@ namespace final_project_Api.Controllers
                                                    .Include(s => s.Students_Teachers_FeedBack)
                                                    .Include(s => s.Session_Students)
                                                    .Include(s => s.Student_Exams)
+                                                   .Include(s=>s.Parent_Teacher_Feedbacks)
                                                    .FirstOrDefault(s => s.UserId == id);
             if (student == null)
             {
@@ -175,7 +189,11 @@ namespace final_project_Api.Controllers
                 {
                     context.student_classes.RemoveRange(student.Student_Classes);
                 }
-                if(student.Payments != null)
+                if (student.Parent_Teacher_Feedbacks != null)
+                {
+                    context.parent_Teacher_Feedbacks.RemoveRange(student.Parent_Teacher_Feedbacks);
+                }
+                if (student.Payments != null)
                 {
                     context.payments.RemoveRange(student.Payments);
                 }
@@ -191,19 +209,26 @@ namespace final_project_Api.Controllers
                 {
                     context.student_Exams.RemoveRange(student.Student_Exams);
                 }
+               
                 context.students.Remove(student);
 
-                var user = await userManager.FindByIdAsync(id);
-                if (user != null)
+                var studentRoles = await context.UserRoles.Where(r=>r.UserId==student.UserId).ToListAsync();
+               
+                if (studentRoles.Any())
                 {
-                    var result= await userManager.DeleteAsync(user);
-                    if (!result.Succeeded)
-                    {
-                        return BadRequest("Error deleting user from Identity.");
-                    }
+                    context.UserRoles.RemoveRange(studentRoles);
                 }
+
+                // 12: Delete the students' from AspNetUsers
+                var studentUsers = await context.Users.Where(s => s.Id == id).ToListAsync();
+
+                if (studentUsers.Any())
+                {
+                    context.Users.RemoveRange(studentUsers);
+                }
+
                 await context.SaveChangesAsync();
-                return Ok("تم حذف الطالب بنجاح");
+                return Ok(new { message = "تم حذف الطالب بنجاح" });
             }
             catch (Exception ex)
             {
@@ -222,7 +247,7 @@ namespace final_project_Api.Controllers
                 var student =await context.students.Include(s => s.User).FirstOrDefaultAsync(s => s.UserId == id);
                 if (student == null)
                 {
-                    return NotFound("هذا الطالب غير موجود من فضلك ادخل الرقم الصحيح");
+                    return NotFound(new { message = "هذا الطالب غير موجود من فضلك ادخل الرقم الصحيح" });
                 }
 
                 if (!ModelState.IsValid)
@@ -234,19 +259,19 @@ namespace final_project_Api.Controllers
                 {
                     if (studentDTO.Level < 1 || studentDTO.Level > 7)
                     {
-                        return BadRequest("المستوي يجب ان يكون من 1 الي 6 الي المرحله الابتدائيه");
+                        return BadRequest(new { message = "المستوي يجب ان يكون من 1 الي 6 الي المرحله الابتدائيه" });
                     }
                 }
                 else if (studentDTO.Stage == "أعدادي" || studentDTO.Stage == "ثانوي")
                 {
                     if (studentDTO.Level < 1 || studentDTO.Level > 4)
                     {
-                        return BadRequest($"المستوي يجب ان يكون بين 1 و 3 للمرحله {studentDTO.Stage}.");
+                        return BadRequest(new { message = $"المستوي يجب ان يكون بين 1 و 3 للمرحله {studentDTO.Stage}." });
                     }
                 }
                 else
                 {
-                    return BadRequest($"غير صحيح  '{studentDTO.Stage}'. يجب ان تكون أبتدائي', 'أعدادي' او 'ثانوي'");
+                    return BadRequest(new { message = $"غير صحيح  '{studentDTO.Stage}'. يجب ان تكون أبتدائي', 'أعدادي' او 'ثانوي'" });
                 }
 
                 student.User.Full_Name = studentDTO.Student_Name;
@@ -255,16 +280,6 @@ namespace final_project_Api.Controllers
                 student.Stage = studentDTO.Stage;
                 student.Level = studentDTO.Level;
 
-                if (!string.IsNullOrEmpty(studentDTO.New_Password))
-                {
-                    var passwordResult = await userManager.ChangePasswordAsync(student.User, studentDTO.Old_Password, studentDTO.New_Password);
-
-                    if (!passwordResult.Succeeded)
-                    {
-                        return BadRequest(passwordResult.Errors);
-                    }
-                }
-            
                 context.SaveChanges();
             }
             catch (DbUpdateException ex)
