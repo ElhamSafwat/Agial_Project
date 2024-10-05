@@ -8,7 +8,7 @@
         public int Min_Degree { get; set; }
         public int Max_Degree { get; set; }
         public string class_name { get; set; }
-        public string subject_name { get; set; }
+       // public string subject_name { get; set; }
         public string Teacher_ID { get; set; }
     }
 }

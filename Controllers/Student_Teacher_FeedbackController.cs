@@ -238,7 +238,7 @@ namespace final_project_Api.Controllers
             return Ok(feedbacks);
         }
         //##############################################
-        [HttpGet("get-feedbacks-by-class-info")]
+        [HttpGet("{className}/{stage}/{level}")]
         public async Task<IActionResult> GetFeedbacksByClassInfo(string className, string stage, int level)
         {
             // التحقق مما إذا كان اسم الفصل موجود في قاعدة البيانات

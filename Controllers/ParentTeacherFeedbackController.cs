@@ -33,13 +33,13 @@ namespace final_project_Api.Controllers
 
             if (teacher == null || parent == null || student == null)
             {
-                return NotFound("Teacher, Parent, or Student not found.");
+                return NotFound(new { message = "Teacher, Parent, or Student not found." });
             }
             //check this parent is parent this student
             bool isparent = student.Parent_ID == feedbackDto.Parent_ID;
             if (isparent==false) 
             { 
-              return BadRequest("هذا ليس ولدك");
+              return BadRequest(new { massege = "هذا ليس ولدك" });
             }
             //check this teacher is teaching this student
             bool is_same_class = false;
@@ -73,12 +73,12 @@ namespace final_project_Api.Controllers
                 context.parent_Teacher_Feedbacks.Add(feedback);
                 await context.SaveChangesAsync();
 
-                return Ok("تم اضافه التعليق بنجاح");
+                return Ok(new { massege = "تم اضافه التعليق بنجاح" });
             }
             else
             {
-                return BadRequest("تلك معلم لا يدرس لولدك هن فضلك اختار مدرس الصح ");
-            }
+                return BadRequest(new { massege = "تلك معلم لا يدرس لولدك هن فضلك اختار مدرس الصح "});
+                }
         }
         #endregion
 
@@ -150,16 +150,15 @@ namespace final_project_Api.Controllers
                     }
 
                 }
-                if (lists.Count > 0)
-                {
+               
                     return Ok(lists);
-                }
-                else { return BadRequest(); }
+                
+                
             }
             catch (DbUpdateConcurrencyException)
             {
 
-                return NotFound("من فضلك ادخل داتا صحيحه ");
+                return NotFound(new {message= "من فضلك ادخل داتا صحيحه" });
 
             }
 
@@ -186,7 +185,7 @@ namespace final_project_Api.Controllers
             }
             else
             {
-                return BadRequest("من فضلك اختار صح");
+                return BadRequest(new {message= "من فضلك اختار صح" });
             }
 
         }
@@ -204,35 +203,38 @@ namespace final_project_Api.Controllers
                     Include(f => f.Teacher.User).Include(f => f.Parent.User).Include(f => f.Student.User).
                     Where(p => p.From == "parent" && p.Teacher_ID == id).ToListAsync();
                 List<Get_feedback__to__teacher_from_parent> lists = new List<Get_feedback__to__teacher_from_parent>();
-                try
+            try
+            {
+                if (parent_Teacher_Feedbacks != null)
                 {
-                    if (parent_Teacher_Feedbacks != null)
+                    foreach (var item in parent_Teacher_Feedbacks)
                     {
-                        foreach (var item in parent_Teacher_Feedbacks)
-                        {
                         Get_feedback__to__teacher_from_parent p_t_f = new Get_feedback__to__teacher_from_parent();
-                            p_t_f.Id = item.Parent_Teacher_Feedback_Id;
-                            
-                            p_t_f.Student_Name = item.Student.User.Full_Name;
-                            p_t_f.parent_Name = item.Parent.User.Full_Name;
-                            p_t_f.date = DateOnly.FromDateTime(item.date);
-                            p_t_f.Feedback = item.FeedBack;
-                            lists.Add(p_t_f);
-                        }
+                        p_t_f.Id = item.Parent_Teacher_Feedback_Id;
 
+                        p_t_f.Student_Name = item.Student.User.Full_Name;
+                        p_t_f.parent_Name = item.Parent.User.Full_Name;
+                        p_t_f.date = DateOnly.FromDateTime(item.date);
+                        p_t_f.Feedback = item.FeedBack;
+                        lists.Add(p_t_f);
                     }
-                    if (lists.Count > 0)
-                    {
-                        return Ok(lists);
-                    }
-                    else { return BadRequest("من فضلك ادخل معرف صحيح"); }
+
                 }
-                catch (Exception e)
+                if (lists.Count > 0)
                 {
-
-                    return NotFound("من فضلك ادخل داتا صحيحه ");
-
+                    return Ok(lists);
                 }
+                else
+                {
+                    return BadRequest(new { message = "من فضلك ادخل معرف صحيح" });
+                }
+            }
+            catch (Exception e)
+            {
+
+                return NotFound(new { message = "من فضلك ادخل معرف صحيح" });
+
+            }
 
 
         }
@@ -276,16 +278,14 @@ namespace final_project_Api.Controllers
                     }
 
                 }
-                if (lists.Count > 0)
-                {
+                
                     return Ok(lists);
-                }
-                else { return BadRequest(); }
+                
             }
             catch (Exception e)
             {
 
-                return NotFound("من فضلك ادخل معرف اب صحيح ");
+                return NotFound(new {message= "من فضلك ادخل معرف اب صحيح " });
 
             }
 
@@ -386,14 +386,14 @@ namespace final_project_Api.Controllers
                 }
                 else
                 {
-                    return BadRequest("تلك مجموعه لا تمتلك فيدباك بعد");
-                }
+                    return BadRequest(new {message= "تلك مجموعه لا تمتلك فيدباك بعد" });
+                    }
 
                 return Ok(all_feedback);
             }
             else
             {
-                return BadRequest("من فضلك ادخل بينات صيحه");
+                return BadRequest(new { message = "من فضلك ادخل معرف صحيح" });
             }
 
 

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace final_project_Api.Controllers
 {
@@ -31,25 +32,37 @@ namespace final_project_Api.Controllers
         public async Task<ActionResult> AddParent(ParentDTO parentDTO)
         {
             var errors = new List<string>();
-
+           
             // تحقق من كلمات المرور
             if (parentDTO.Password != parentDTO.ConfirmPassword)
             {
-                errors.Add("Parent password and Confirm Password do not match.");
+                errors.Add("كلمه المرور وتاكيد كلمه مرور غير متطابقين.");
             }
 
             // تحقق من وجود البريد الإلكتروني للأهل
             if (await _userManager.FindByEmailAsync(parentDTO.Email) != null)
             {
-                errors.Add("Parent email already exists.");
+                errors.Add("حساب ولي الامر موجود بالفعل .");
             }
-
+            if(await _userManager.FindByNameAsync(parentDTO.UserName)!=null)
+            {
+                errors.Add("اسم مستخدم مستخدم من قبل من فضلك اختار اسم مستخدم مختلف لي ولي امر .");
+            }
             // تحقق من بيانات الطلاب
             foreach (var studentDTO in parentDTO.Students)
             {
+                // تحقق من وجود البريد الإلكتروني طلاب
+                if (await _userManager.FindByEmailAsync(studentDTO.Student_Email) != null)
+                {
+                    errors.Add($"حساب طالب  موجود بالفعل  من فضلك اختار حساب تاني طالب {studentDTO.fullName} .");
+                }
+                if (await _userManager.FindByNameAsync(studentDTO.Student_Name) != null)
+                {
+                    errors.Add($"{studentDTO.fullName}اسم مستخدم مستخدم من قبل من فضلك اختار اسم مستخدم مختلف لي طالب .");
+                }
                 if (studentDTO.Password != studentDTO.ConfirmPassword)
                 {
-                    errors.Add($"Password and Confirm Password do not match for student {studentDTO.Student_Name}.");
+                    errors.Add($"كلمه المرور وكلمه تاكيد لحساب طالب غير متطابقين  {studentDTO.Student_Name}.");
                 }
 
                 if (studentDTO.Stage == "أبتدائي")
@@ -66,10 +79,10 @@ namespace final_project_Api.Controllers
                         errors.Add($"Level for student {studentDTO.Student_Name} must be between 1 and 3 for {studentDTO.Stage} stage.");
                     }
                 }
-                else
-                {
-                    errors.Add($"Invalid stage '{studentDTO.Stage}' for student {studentDTO.Student_Name}.");
-                }
+                //else
+                //{
+                //    errors.Add($"Invalid stage '{studentDTO.Stage}' for student {studentDTO.Student_Name}.");
+                //}
             }
 
             // إذا كان هناك أخطاء، قم بإرجاعها
@@ -133,10 +146,24 @@ namespace final_project_Api.Controllers
                 await _userManager.AddToRoleAsync(studentUser, "Student");
             }
 
+          
+            //check to sure this parent have student if not delete it
+            var have_student=await _context.parent.Include(parent => parent.Students).FirstOrDefaultAsync(p=>p.UserId== parent.UserId);
+            if (have_student != null)
+            {
+                if (have_student.Students == null)
+                {
+                    _context.parent.Remove(have_student);
+                    await _context.SaveChangesAsync();
+                    return BadRequest("لن تسطيع اضافه بيانات ولي لامر من فضلك ادخل بيانات ابنائه صحيحه ");
+
+                }
+
+            }
+            
             // حفظ جميع التغييرات
             await _context.SaveChangesAsync();
-
-            return Ok(new { Message = "Parent and Students registered successfully." });
+            return Ok(new { Message = "تم اضافه حساب ولي الامر وابنائه بنجاح" });
         }
         #endregion
 
@@ -205,7 +232,7 @@ namespace final_project_Api.Controllers
 
             if (parents == null || !parents.Any())
             {
-                return NotFound(); // Return 404 if no parents are found
+                return NotFound("لا توجد اولياء امور بتلك اسماء"); // Return 404 if no parents are found
             }
 
             return Ok(parents);
@@ -231,8 +258,22 @@ namespace final_project_Api.Controllers
 
             // Update the student's list for the parent
             parent.User.Full_Name = parentUpdateDTO.Full_Name;
-            parent.User.Email = parentUpdateDTO.Email;
+            parent.User.PhoneNumber = parentUpdateDTO.phoneNumber;
+            if (parent.User.Email == parentUpdateDTO.Email)
+            {
+                parent.User.Email = parentUpdateDTO.Email;
 
+            }
+           
+            else if (await _userManager.FindByEmailAsync(parentUpdateDTO.Email) != null)
+            {
+                    return BadRequest("تلك اميل موجود بالفعل ");
+            }
+            else
+            {
+                parent.User.Email = parentUpdateDTO.Email;
+            }
+            
             // Update the user in the database
             var result = await _userManager.UpdateAsync(parent.User);
             if (!result.Succeeded)
@@ -240,21 +281,11 @@ namespace final_project_Api.Controllers
                 return BadRequest(result.Errors);
             }
 
-            // Check if a new password is provided
-            if (!string.IsNullOrEmpty(parentUpdateDTO.NewPassword))
-            {
-                var passwordResult = await _userManager.ChangePasswordAsync(parent.User, parentUpdateDTO.OldPassword, parentUpdateDTO.NewPassword);
-
-                if (!passwordResult.Succeeded)
-                {
-                    return BadRequest(passwordResult.Errors);
-                }
-            }
 
             // Save changes to the database
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "Parent updated successfully." });
+            return Ok(new { Message = "تم تحديث الحساب بنجاح " });
         }
 
 
@@ -312,7 +343,19 @@ namespace final_project_Api.Controllers
             {
                 _context.payments.RemoveRange(studentPayments);
             }
-
+            // delete from parent_teacher feedback
+            var studentparentteacher_feed=await _context.parent_Teacher_Feedbacks.Where(p=> studentIds.Contains(p.Student_ID)).ToListAsync();
+            if (studentparentteacher_feed.Count>0)
+            {
+                _context.parent_Teacher_Feedbacks.RemoveRange(studentparentteacher_feed);
+            }
+            //delete from student_class
+            var student_class=await _context.student_classes.Where(p => studentIds.Contains(p.Student_ID))
+                .ToListAsync();
+            if (student_class.Count > 0) 
+            { 
+              _context.student_classes.RemoveRange(student_class);
+            }
             // 6: Delete the students  with this parent from the Students table
             if (parent.Students.Any())
             {

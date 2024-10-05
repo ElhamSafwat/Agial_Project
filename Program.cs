@@ -19,6 +19,26 @@ namespace final_project_Api
             });
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AgialContext>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+
+            // Add CORS services
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins", builder =>
+                {
+                    builder.AllowAnyOrigin() 
+                           .AllowAnyMethod() 
+                           .AllowAnyHeader(); 
+                });
+            });
 
             builder.Services.AddControllers();
 
@@ -55,6 +75,8 @@ namespace final_project_Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            // Use CORS policy
+            app.UseCors("AllowAllOrigins");
 
             // Enable CORS
             //app.UseCors("AllowSpecificOrigin");
