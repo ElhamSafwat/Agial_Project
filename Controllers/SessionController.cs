@@ -1,4 +1,5 @@
-﻿using final_project_Api.DTO;
+﻿using final_project_Api.Admin_ClassDTO;
+using final_project_Api.DTO;
 using final_project_Api.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -250,7 +251,38 @@ namespace final_project_Api.Controllers
 
 
         /**************************************************************************************/
+        #region Get Session By ID 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> getsessionbyid(int id)
+        {
+            try
+            {
+                var session = await context.sessions.Include(s=>s.Teacher_Class.Class).Include(s => s.Teacher_Class.Teacher.User).FirstOrDefaultAsync(s => s.Session_ID == id);
+                if(session == null)
+                {
+                    return NotFound();
+                }
+                Get_Sessions sessionsdto = new Get_Sessions 
+                { 
+                   Session_ID = session.Session_ID,
+                   Session_Title=session.Material_Name,
+                   Date = DateOnly.FromDateTime(session.Date),
+                   Start_Time = session.Start_Time,
+                   End_Time = session.End_Time,
+                   Room = session.Room,
+                   period = session.period,
+                   Teacher_Name=session.Teacher_Class.Teacher.User.Full_Name,
+                   Class_Name=session.Teacher_Class.Class.Class_Name
+                };
+                return Ok(sessionsdto);
+            }
+            catch (Exception ex)
+            {
 
+                return StatusCode(500, $"Internal server error: {ex.Message}, Stack Trace: {ex.StackTrace}");
+            }
+        }
+        #endregion
 
         #region get sessions table for one class
         [HttpGet("{class_name}/{stage}/{level}")]
@@ -508,7 +540,9 @@ namespace final_project_Api.Controllers
 
                 context.sessions.Update(session);
                 context.SaveChanges();
-                return Ok($"تم تعديل موعد حصه {session.Material_Name}  ");
+                //return Ok($"تم تعديل موعد حصه {session.Material_Name}  ");
+                return Ok(new { message = $"تم تعديل موعد حصه {session.Material_Name}." });
+
             }
             catch (Exception ex)
             {
@@ -521,7 +555,22 @@ namespace final_project_Api.Controllers
 
         #endregion
 
+        [HttpGet("{classId}/teachers")]
+        public async Task<IActionResult> GetTeachersByClass(int classId)
+        {
+            var teachers = await context.teacher_Classes
+                .Where(tc => tc.Class_ID == classId)
+                .Select(tc => new GetTeachersToClassDTO
+                {
+                    UserID = tc.Teacher_ID,
+                    FullName = tc.Teacher.User.Full_Name
 
-       
+                })
+                .ToListAsync();
+
+            return Ok(teachers);
+
+        }
+
     }
 }
