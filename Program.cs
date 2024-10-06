@@ -1,4 +1,4 @@
-
+﻿
 using final_project_Api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +19,15 @@ namespace final_project_Api
             });
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AgialContext>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
 
             // Add CORS services
             builder.Services.AddCors(options =>
@@ -32,6 +41,28 @@ namespace final_project_Api
             });
 
             builder.Services.AddControllers();
+
+            //Add CORS policy
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowSpecificOrigin", builder =>
+            //    {
+            //        builder.WithOrigins("http://localhost:4200") // الأصل الخاص بتطبيق Angular
+            //               .AllowAnyMethod()
+            //               .AllowAnyHeader();
+            //    });
+            //});
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -45,6 +76,11 @@ namespace final_project_Api
                 app.UseSwaggerUI();
             }
             // Use CORS policy
+            app.UseCors("AllowAllOrigins");
+
+            // Enable CORS
+            //app.UseCors("AllowSpecificOrigin");
+
             app.UseCors("AllowAllOrigins");
 
             app.UseAuthorization();

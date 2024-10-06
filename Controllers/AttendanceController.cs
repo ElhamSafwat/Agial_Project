@@ -27,7 +27,7 @@ namespace final_project_Api.Controllers
 
             if (sessionStudent == null)
             {
-                return NotFound("Student not found in the specified session.");
+                return NotFound(new { message = "Student not found in the specified session." });
             }
 
             // Update Attendance
@@ -36,7 +36,7 @@ namespace final_project_Api.Controllers
             //Save Changes
             await agialContext.SaveChangesAsync();
 
-            return Ok("Attendance recorded/updated for the student in the session.");
+            return Ok(new { message = "Attendance recorded/updated for the student in the session." });
         }
 
         #endregion
@@ -76,19 +76,19 @@ namespace final_project_Api.Controllers
                     {
                         combined.sc,
                         combined.s,
-                        Attendance = sessions.Select(session => session.Attendance).FirstOrDefault() 
+                        Attendance = sessions.Select(session => session.Attendance).FirstOrDefault()
                     })
                 .Select(result => new StudentAttendanceDTO
                 {
                     UserID = result.sc.Student_ID,
-                    Full_Name = result.s.User != null ? result.s.User.Full_Name : "غير متوفر", 
-                    Attendance = result.Attendance 
+                    Full_Name = result.s.User != null ? result.s.User.Full_Name : "غير متوفر",
+                    Attendance = result.Attendance
                 })
                 .ToListAsync();
 
             if (students == null || !students.Any())
             {
-                return NotFound("لا يوجد طلاب في هذا الفصل ");
+                return NotFound(new { message = "لا يوجد طلاب في هذا الفصل " });
             }
 
             return students;
@@ -113,7 +113,7 @@ namespace final_project_Api.Controllers
 
             if (sessionStudent == null)
             {
-                return NotFound();
+                return NotFound(new { message = "لا يوجد" });
             }
 
             return sessionStudent;
@@ -132,7 +132,7 @@ namespace final_project_Api.Controllers
 
             if (students == null || !students.Any())
             {
-                return NotFound("No students found for the specified class.");
+                return NotFound(new { message = "No students found for the specified class." });
             }
 
             // Record attendance for each student
@@ -151,12 +151,12 @@ namespace final_project_Api.Controllers
                 }
                 else
                 {
-                    return BadRequest($"Student ID {attendanceRecord.Student_ID} is not part of the class {classId}.");
+                    return BadRequest(new { message = ($"Student ID {attendanceRecord.Student_ID} is not part of the class {classId}.") });
                 }
             }
 
             await agialContext.SaveChangesAsync();
-            return Ok("Attendance recorded successfully.");
+            return Ok(new { message = "Attendance recorded successfully." });
         }
         #endregion
 
@@ -166,19 +166,19 @@ namespace final_project_Api.Controllers
         {
             if (sessionId != sessionStudentDTO.SessionID || studentId != sessionStudentDTO.Student_ID)
             {
-                return BadRequest("Session ID or Student ID does not match.");
+                return BadRequest(new { message = "Session ID or Student ID does not match." });
             }
 
-            
+
             var sessionStudent = await agialContext.Session_Students
                 .FirstOrDefaultAsync(ss => ss.Session_ID == sessionId && ss.Student_ID == studentId);
 
             if (sessionStudent == null)
             {
-                return NotFound("Student in the specified session not found.");
+                return NotFound(new { message = "Student in the specified session not found." });
             }
 
-            
+
             sessionStudent.Attendance = sessionStudentDTO.Attendance;
 
 
@@ -190,7 +190,7 @@ namespace final_project_Api.Controllers
             {
                 if (!SessionStudentExists(sessionId, studentId))
                 {
-                    return NotFound("Concurrency issue: Student in the session not found.");
+                    return NotFound(new { message = "Concurrency issue: Student in the session not found." });
                 }
                 else
                 {
