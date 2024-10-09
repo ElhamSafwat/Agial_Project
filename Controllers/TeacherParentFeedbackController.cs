@@ -217,19 +217,66 @@ namespace final_project_Api.Controllers
 
         #endregion
 
+        #region newWithFare
+        [HttpGet("students/{teacherId}")]
+        public async Task<ActionResult<List<ClassWithStudentsAndParentsDTO>>> GetStudentsAndParentsByTeacherId(string teacherId)
+        {
+            // Retrieve the teacher and their associated classes
+            var teacher = await _context.teachers
+                .Include(t => t.teacher_Classes)
+                .ThenInclude(tc => tc.Class)
+                .FirstOrDefaultAsync(t => t.UserId == teacherId);
+
+            if (teacher == null)
+            {
+                return NotFound("Teacher not found.");
+            }
+
+            var classWithStudentsAndParentsList = new List<ClassWithStudentsAndParentsDTO>();
+
+            foreach (var teacherClass in teacher.teacher_Classes)
+            {
+                // Get the class name
+                var className = teacherClass.Class.Class_Name;
+
+                // Get parents and their students in the class
+                var parentsWithStudents = await _context.students
+                    .Include(s => s.parent)
+                    .Where(s => s.Student_Classes.Any(sc => sc.Class_ID == teacherClass.Class_ID))
+                    .GroupBy(s => new
+                    {
+                        ParentId = s.parent.UserId, // Group by parent ID
+                        ParentName = s.parent.User.Full_Name // Group by parent name
+                    }) // Group by parent ID and name
+                    .Select(g => new ParentWithStudentsDTO
+                    {
+                        ParentId = g.Key.ParentId, // Assign Parent ID
+                        ParentName = g.Key.ParentName, // Assign Parent Name
+                        Students = g.Select(s => new StudentDTO
+                        {
+                            StudentName = s.User.Full_Name,
+                            StudentId = s.UserId // Assign Student ID
+                        }).ToList()
+                    }).ToListAsync();
+
+                // Create the result object for the current class
+                var result = new ClassWithStudentsAndParentsDTO
+                {
+                    ClassName = className, // Assign the class name
+                    ParentsWithStudents = parentsWithStudents
+                };
+
+                classWithStudentsAndParentsList.Add(result);
+            }
+
+            return Ok(classWithStudentsAndParentsList); // Return the list of class results
+        }
+        #endregion
+
+
+
+
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
 }
 

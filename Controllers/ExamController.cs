@@ -339,7 +339,7 @@ namespace final_project_Api.Controllers
                 exam.class_name=edit_ExamDTO.class_name;
                 context.exam.Update(exam);
                 context.SaveChanges();
-                return Ok("تم تعديل بيانات الامتحان");
+                return Ok(new { Message = "تم تعديل بيانات الامتحان" });
             }
             catch (Exception ex)
             {
