@@ -393,7 +393,7 @@ namespace final_project_Api.Controllers
             }
             else
             {
-                return BadRequest(new { message = "من فضلك ادخل معرف صحيح" });
+                return BadRequest(new { message = "من فضلك  ادخل اسم  مجموعه وقيمه  مرحله والمستوي داتا صحيحه حتي نسطيع ارجع الاراء لتلك مجموعه" });
             }
 
 
