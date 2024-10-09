@@ -409,5 +409,29 @@ namespace final_project_Api.Controllers
 
         #endregion
 
+        [HttpGet("liststudent/{parentId}")]
+        public async Task<ActionResult<List<GetstudentparentbyidDTO>>> GetstudentbyParentById(string parentId)
+        {
+            var students = await _context.parent
+                .Include(p => p.Students)
+                .Where(p => p.User.Id == parentId)
+                .SelectMany(p => p.Students)
+                .Select(s => new GetstudentparentbyidDTO
+                {
+                    StudentId = s.User.Id,
+                    StudentName = s.User.Full_Name
+                })
+                .ToListAsync();
+
+            if (students == null || students.Count == 0)
+            {
+                return NotFound(); // Return 404 if no students are found
+            }
+
+            return Ok(students);
+        }
+
+
+
     }
 }
