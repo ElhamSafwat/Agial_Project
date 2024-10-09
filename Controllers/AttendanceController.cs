@@ -119,47 +119,7 @@ namespace final_project_Api.Controllers
             return sessionStudent;
         }
 
-        #region Record Attendance for a Class and Session
-        // POST: api/Attendance/RecordAttendance/5/5
-        [HttpPost("RecordAttendance/{classId}/{sessionId}")]
-        public async Task<IActionResult> RecordAttendance(int classId, int sessionId, List<AttendanceDTO> attendanceRecords)
-        {
-            // Fetch students belonging to this class
-            var students = await agialContext.student_classes
-                .Where(sc => sc.Class_ID == classId)
-                .Select(sc => sc.Student_ID)
-                .ToListAsync();
-
-            if (students == null || !students.Any())
-            {
-                return NotFound(new { message = "No students found for the specified class." });
-            }
-
-            // Record attendance for each student
-            foreach (var attendanceRecord in attendanceRecords)
-            {
-                if (students.Contains(attendanceRecord.Student_ID))
-                {
-                    var sessionStudent = new Session_Student
-                    {
-                        Session_ID = sessionId,
-                        Student_ID = attendanceRecord.Student_ID,
-                        Attendance = attendanceRecord.Attendance
-                    };
-
-                    agialContext.Session_Students.Add(sessionStudent);
-                }
-                else
-                {
-                    return BadRequest(new { message = ($"Student ID {attendanceRecord.Student_ID} is not part of the class {classId}.") });
-                }
-            }
-
-            await agialContext.SaveChangesAsync();
-            return Ok(new { message = "Attendance recorded successfully." });
-        }
-        #endregion
-
+       
         // PUT: api/Attendance/5
         [HttpPut("{sessionId}/{studentId}")]
         public async Task<IActionResult> PutSessionStudent(int sessionId, string studentId, SessionStudentDTO sessionStudentDTO)
