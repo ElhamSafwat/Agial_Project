@@ -181,10 +181,7 @@ namespace final_project_Api.Controllers
             }
             try
             {
-                if (student.parent != null)
-                {
-                    context.parent.RemoveRange(student.parent);
-                }
+               
                 if(student.Student_Classes != null)
                 {
                     context.student_classes.RemoveRange(student.Student_Classes);
@@ -282,14 +279,133 @@ namespace final_project_Api.Controllers
 
                 context.SaveChanges();
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while updating the student.");
+
+                return StatusCode(500, $"Internal server error: {ex.Message}, Stack Trace: {ex.StackTrace}");
             }
             return NoContent();
         }
 
         #endregion
 
+
+        #region get all classes for one teacher
+        [HttpGet("{teacherId}/teachers")]
+        public async Task<IActionResult> GetClassByTeacher(string teacherId)
+        {
+            var teachers = await context.teacher_Classes
+                .Where(tc => tc.Teacher_ID == teacherId)
+                .Select(tc => new GetTeachersToClassDTO
+                {
+                    classid = tc.Class.Class_ID,
+                    className=tc.Class.Class_Name
+                })
+                .ToListAsync();
+
+            return Ok(teachers);
+
+        }
+        #endregion
+
+        #region get students for one class
+
+        [HttpGet("{classId}/students")]
+        public async Task<IActionResult> GetStudentsByClass(int classId)
+        {
+            var teachers = await context.student_classes
+                .Where(tc => tc.Class_ID == classId)
+                .Select(tc => new GetTeachersToClassDTO
+                {
+                    UserID = tc.Student_ID,
+                    FullName = tc.students.User.Full_Name
+
+                })
+                .ToListAsync();
+
+            return Ok(teachers);
+
+        }
+        #endregion
+
+        #region get degree for assingment =>one student
+        [HttpGet("assignmentgrades/{studentId}")]
+        public async Task<ActionResult<IEnumerable<getAssignmentForStudentDTO>>> GetGradesByStudentId(string studentId)
+        {
+            var grades = await context.Session_Students
+                .Include(ss => ss.Session)
+                .Where(ss => ss.Student_ID == studentId && ss.Degree != 0) // تأكد من أن الدرجة ليست null
+                .Select(ss => new getAssignmentForStudentDTO
+                {
+                    Session_ID = ss.Session_ID,
+                    studentId = ss.Student_ID,
+                    Date = DateOnly.FromDateTime(ss.Session.Date),
+                    Assignment = ss.Assignment,
+                    Degree = ss.Degree,
+                    subject_Name = ss.Session.Material_Name
+                })
+                .ToListAsync();
+
+            if (grades == null || !grades.Any())
+            {
+                return NotFound(new { message = "No grades found for the specified student's assignments." });
+            }
+
+            return Ok(grades);
+        }
+
+
+        #endregion
+
+        #region get all assingment for one student
+        [HttpGet("unsubmittedassignments/{studentId}")]
+        public async Task<ActionResult<IEnumerable<getAssignmentForStudentDTO>>> GetUnsubmittedAssignmentsByStudentId(string studentId)
+        {
+            var assignments = await context.Session_Students
+                .Include(ss => ss.Session)
+                .Where(ss => ss.Student_ID == studentId && ss.Degree == 0) // فقط المهام التي لم تُسلم
+                .Select(ss => new getAssignmentForStudentDTO
+                {
+                    Session_ID = ss.Session_ID,
+                    studentId = ss.Student_ID,
+                    Date = DateOnly.FromDateTime(ss.Session.Date),
+                    Assignment = ss.Assignment,
+                    subject_Name = ss.Session.Material_Name
+                })
+                .ToListAsync();
+
+            if (assignments == null || !assignments.Any())
+            {
+                return NotFound(new { message = "No unsubmitted assignments found for the specified student." });
+            }
+
+            return Ok(assignments);
+        }
+
+        #endregion+
+
+
+
+        #region get all teachers for one student
+        [HttpGet("teachers/{studentId}")]
+        public async Task<IActionResult> GetTeachersByStudent(string studentId)
+        {
+            var teachers = await context.student_classes
+                .Where(sc => sc.Student_ID == studentId) // الحصول على الفصول الخاصة بالطالب
+                .SelectMany(sc => context.teacher_Classes
+                    .Where(tc => tc.Class_ID == sc.Class_ID) // البحث عن المدرسين في هذه الفصول
+                    .Select(tc => new GetTeachersOneStudent
+                    {
+                        UserID = tc.Teacher_ID,
+                        className = tc.Class.Class_Name,
+                        FullName = tc.Teacher.User.Full_Name, // افترض أن لديك خاصية لاسم المدرس
+
+                    }))
+                .Distinct() // للتأكد من عدم وجود تكرارات
+                .ToListAsync();
+
+            return Ok(teachers);
+        }
+        #endregion
     }
 }

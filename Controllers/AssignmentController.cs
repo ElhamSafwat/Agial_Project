@@ -146,7 +146,7 @@ namespace final_project_Api.Controllers
                     SessionID = ss.Session_ID ?? 0,
                     Assignment = ss.Assignment,
                     Session_Date = ss.Session.Date
-                })
+                }).Distinct()
                 .ToListAsync();
         }
 
