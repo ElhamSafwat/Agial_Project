@@ -46,21 +46,21 @@ namespace final_project_Api.Controllers
             // التحقق مما إذا كان الطالب أو المدرس غير موجود
             if (student == null && teacher == null)
             {
-                return NotFound("Both student and teacher not found in the database.");
+                return NotFound(new{message="Both student and teacher not found in the database."});
             }
             if (student == null)
             {
-                return NotFound("Student not found .");
+                return NotFound(new { message= "Student not found ." });
             }
             if (teacher == null)
             {
-                return NotFound("Teacher not found.");
+                return NotFound(new { message = "Teacher not found." });
             }
 
             // التحقق مما إذا كان الطالب والمدرس في نفس الفصل
             if (!AreStudentAndTeacherInSameClass(dto.Student_ID, dto.Teacher_ID))
             {
-                return BadRequest("The student and teacher are not in the same class.");
+                return BadRequest(new { message = "The student and teacher are not in the same class." });
             }
 
             // إضافة الملاحظة بعد التحقق من صحة البيانات
@@ -99,7 +99,7 @@ namespace final_project_Api.Controllers
             _context.student_Teacher_Feedbacks.Update(feedback);
             await _context.SaveChangesAsync();
 
-            return Ok("Feedback updated successfully.");
+            return Ok(new { message = "Feedback updated successfully." });
         }
 
         //[HttpGet("get-all-feedbacks")]

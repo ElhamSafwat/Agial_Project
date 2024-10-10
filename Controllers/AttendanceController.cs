@@ -19,22 +19,41 @@ namespace final_project_Api.Controllers
 
         #region Record Attendance for a Student and Session
         // POST: api/Attendance/RecordAttendance/5/5
-        [HttpPost("RecordAttendance/{sessionId}/{studentId}")]
-        public async Task<IActionResult> RecordAttendance(int sessionId, string studentId, bool attendance)
+        [HttpPost("RecordAttendance")]
+        public async Task<IActionResult> RecordAttendance(List<CreateAttendance> attendances)
         {
-            var sessionStudent = await agialContext.Session_Students
-                .FirstOrDefaultAsync(ss => ss.Session_ID == sessionId && ss.Student_ID == studentId);
-
-            if (sessionStudent == null)
+            
+            List<Session_Student> list = new List<Session_Student>();
+            try
             {
-                return NotFound(new { message = "Student not found in the specified session." });
+                if (attendances.Count > 0)
+                {
+                    foreach (var attendance in attendances)
+                    {
+                        Session_Student sessionStudent = new Session_Student();
+                        sessionStudent.Session_ID = attendance.session_id;
+                        sessionStudent.Student_ID = attendance.studentId;
+                        // Update Attendance
+                        sessionStudent.Attendance = attendance.attandence;
+                        list.Add(sessionStudent);
+                    }
+
+                    agialContext.Session_Students.AddRange(list);
+
+                    //Save Changes
+                    await agialContext.SaveChangesAsync();
+                }
+
+
+
+            }
+            catch (Exception ex) 
+            {
+            
+              return BadRequest( new { message = ex.Message });
             }
 
-            // Update Attendance
-            sessionStudent.Attendance = attendance;
-
-            //Save Changes
-            await agialContext.SaveChangesAsync();
+           
 
             return Ok(new { message = "Attendance recorded/updated for the student in the session." });
         }

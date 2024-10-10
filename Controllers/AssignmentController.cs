@@ -152,39 +152,40 @@ namespace final_project_Api.Controllers
 
 
         [HttpPost("AddStudentDegree")]
-        public async Task<IActionResult> AddStudentDegree(int sessionId, string studentId, int degree)
+        public async Task<IActionResult> AddStudentDegree( List<CreatedegreeforAssigment> assigment)
         {
-            // البحث عن السجل المرتبط بالطالب والجلسة المحددة
-            var sessionStudent = await agialContext.Session_Students
-                .Where(ss => ss.Session_ID == sessionId && ss. Student_ID == studentId)
-                .FirstOrDefaultAsync();
 
-            if (sessionStudent == null)
+            try
             {
-                return NotFound(new { message = "Student not found in the specified session." });
+                var sessionStudent = await agialContext.Session_Students.ToListAsync();
+                foreach (var ass in assigment)
+                {
+                    foreach (var item in sessionStudent)
+                    {
+                        if (ass.studentId == item.Student_ID && ass.sessionId == item.Session_ID)
+                        {
+                            item.Degree = ass.degree;
+                            agialContext.Update(item);
+                            break;
+                        }
+                    }
+
+                }
+                agialContext.SaveChanges();
+                return Ok(new{ message="تم اضافه درجات بنجاح"});
+            }
+            catch (Exception ex) { 
+            
+              return BadRequest(ex.Message);
             }
 
-            // التحقق من الدرجة المدخلة
-            if (degree < 0 || degree >= 10) // بافتراض أن الدرجة تكون من 0 إلى 10
-            {
-                return BadRequest(new { message = "Degree must be between 0 and 10." });
-            }
 
-            // تعيين الدرجة
-            sessionStudent.Degree = degree;
-            List<string> de = new List<string>();
-            if (degree >= 5)
-            {
-                de.Add( $"Student {studentId} has successfully completed the assignment.");
-            }
-            else
-            {
-                de.Add($"Student {studentId} did not complete the assignment successfully. Please follow up.");
-            }
 
-            await agialContext.SaveChangesAsync();
-            de.Add($"Degree {degree} added for student {studentId} in session {sessionId}.");
-            return Ok(de);
+
+
+
+
+          
         }
     }
 }
