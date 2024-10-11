@@ -254,7 +254,7 @@ namespace final_project_Api.Controllers
         {
             List<Parent_Teacher_Feedback> get_feedback=await context.parent_Teacher_Feedbacks.
                 Include(f => f.Teacher.User).Include(f => f.Student.User).Include(f => f.Parent.User).
-                Where(p => p.From == "parent"&&p.Parent_ID== parent_id).ToListAsync();
+                Where(p => p.From == "Teacher"&&p.Parent_ID== parent_id).ToListAsync();
             List<Get_feedback_by_parent> lists = new List<Get_feedback_by_parent>();
             try
             {

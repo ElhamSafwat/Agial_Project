@@ -2,6 +2,7 @@
 using final_project_Api.DTO;
 using final_project_Api.Models;
 using final_project_Api.Parentdtos;
+using final_project_Api.Serviece;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +16,14 @@ namespace final_project_Api.Controllers
     public class StudentController : ControllerBase
     {
         private readonly AgialContext context;
+        private readonly IEmailService emailService;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public StudentController(AgialContext _context,UserManager<ApplicationUser> _userManager)
+        public StudentController(AgialContext _context,UserManager<ApplicationUser> _userManager, IEmailService _emailService)
         {
             this.context = _context;
             this.userManager = _userManager;
+            this.emailService = _emailService;
         }
 
         #region Get All Students
@@ -158,6 +161,10 @@ namespace final_project_Api.Controllers
             context.students.Add(student);
            
             await context.SaveChangesAsync();
+            // Send email
+            await emailService.SendRegistrationEmail(AddStudDto.Student_Email, AddStudDto.Student_Name, AddStudDto.Password);
+
+
             return Ok(new { message = "Student created successfully.." });
         }
         #endregion

@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using final_project_Api.Serviece;
 
 
 namespace final_project_Api
@@ -14,6 +15,7 @@ namespace final_project_Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
             // Add services to the container.
             builder.Services.AddDbContext<AgialContext>(options =>
@@ -60,6 +62,12 @@ namespace final_project_Api
                            .AllowAnyHeader(); 
                 });
             });
+
+
+
+           
+         
+
 
             builder.Services.AddControllers();
 

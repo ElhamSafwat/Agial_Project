@@ -81,7 +81,7 @@ namespace final_project_Api.Controllers
             var feedbacks = await _context.parent_Teacher_Feedbacks
                 .Include(f => f.Student)
                 .Include(f => f.Parent)
-                .Where(f => f.Teacher_ID == teacherId && f.From == "Teacher") 
+                .Where(f => f.Teacher_ID == teacherId && f.From == "parent") 
                 .Select(feedback => new getbyteacheridfeedback
                 {
                     ParentName = feedback.Parent.User.Full_Name,

@@ -1,6 +1,7 @@
 ﻿using final_project_Api.DTO;
 using final_project_Api.Models;
 using final_project_Api.Parentdtos;
+using final_project_Api.Serviece;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,14 +17,16 @@ namespace final_project_Api.Controllers
         private readonly AgialContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailService emailService;
 
         public ParentController(AgialContext context,
                                 UserManager<ApplicationUser> userManager,
-                                RoleManager<IdentityRole> roleManager)
+                                RoleManager<IdentityRole> roleManager, IEmailService _emailService)
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            this.emailService=_emailService;
         }
 
         #region create parent and student
@@ -114,6 +117,9 @@ namespace final_project_Api.Controllers
             // تعيين دور للأهل
             await _userManager.AddToRoleAsync(parentUser, "Parent");
 
+            await emailService.SendRegistrationEmail(parentDTO.Email, parentDTO.UserName, parentDTO.Password);
+
+
             // إضافة الطلاب
             foreach (var studentDTO in parentDTO.Students)
             {
@@ -144,9 +150,11 @@ namespace final_project_Api.Controllers
                 _context.students.Add(student);
                 // تعيين دور للطالب
                 await _userManager.AddToRoleAsync(studentUser, "Student");
+                await emailService.SendRegistrationEmail(studentDTO.Student_Email, studentDTO.Student_Name, studentDTO.Password);
+
             }
 
-          
+
             //check to sure this parent have student if not delete it
             var have_student=await _context.parent.Include(parent => parent.Students).FirstOrDefaultAsync(p=>p.UserId== parent.UserId);
             if (have_student != null)

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using final_project_Api.DTOs;
 using Microsoft.AspNetCore.Identity;
+using final_project_Api.Serviece;
 
 namespace final_project_Api.Controllers
 {
@@ -14,14 +15,16 @@ namespace final_project_Api.Controllers
         private readonly AgialContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailService emailService;
         public TeacherController
                (AgialContext context,
                 RoleManager<IdentityRole> roleManager,
-                UserManager<ApplicationUser> userManager)
+                UserManager<ApplicationUser> userManager, IEmailService _emailService)
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            emailService=_emailService;
         }
 
         // Url http://localhost:5175/api/Teacher   // GetAllTeacherWithSubject
@@ -146,6 +149,8 @@ namespace final_project_Api.Controllers
 
                 _context.teachers.Add(teacher);
                 _context.teacher_Stages.Add(teacher_stage);
+                await emailService.SendRegistrationEmail(addTeacherDTO.Email, addTeacherDTO.UserName, addTeacherDTO.Password);
+
 
                 // Assign the "Teacher" role to the new user
                 var roleExists = await _roleManager.RoleExistsAsync("Teacher");
