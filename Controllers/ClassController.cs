@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static final_project_Api.DTO.Get_for_editClass;
 
 namespace final_project_Api.Controllers
 {
@@ -131,13 +132,13 @@ namespace final_project_Api.Controllers
                     continue;
                 }
 
-                var student = _context.students
+                var student = _context.students.Include(s=>s.User)
                     .Where(s => s.Stage == classCreateDto.Stage && s.Level == classCreateDto.Level && s.UserId == studentId)
                     .FirstOrDefault();
 
                 if (student == null)
                 {
-                    errorMessages.Add($"الطالب برقم {studentId} ليس في نفس المرحلة أو المستوى.");
+                    errorMessages.Add($"الطالب برقم {student.User.Full_Name} ليس في نفس المرحلة أو المستوى.");
                     continue;
                 }
 
@@ -151,7 +152,7 @@ namespace final_project_Api.Controllers
 
                 if (existingStudentClass)
                 {
-                    errorMessages.Add($"الطالب برقم {studentId} مسجل بالفعل في هذا الفصل.");
+                    errorMessages.Add($"الطالب  {student.User.Full_Name} مسجل بالفعل في هذا الفصل.");
                     continue;
                 }
 
@@ -427,7 +428,39 @@ namespace final_project_Api.Controllers
         }
 
         #endregion
+        
+        
+        #region get student by stage and level
+        [HttpGet("students/{stage}/{level}")]
+        public async Task<IActionResult>getstudentsforclass(string stage ,int level)
+        {
+            var students = await _context.students.Where(s => s.Stage == stage && s.Level == level).Select(s => new { student_id = s.UserId, student_name = s.User.Full_Name }).ToListAsync(); ;
 
+           
+
+            return Ok(students);
+        }
+        #endregion
+
+        #region get teacher
+        [HttpGet("teachers/{stage}")]
+        public async Task<IActionResult> getteacherforclass(string stage)
+        {
+           
+            if (stage == "ثانوي")
+            {
+                 var teachers = await _context.teachers.Where(s => s.teacher_Stages.Any(t=>t.Stage == stage)  ).Select(s => new { teacher_id = s.UserId, teacher_name = s.User.Full_Name,stubject_id=s.Subject_ID }).ToListAsync(); ;
+                return Ok(teachers);
+            }
+            else
+            {
+                var teachers = await _context.teachers.Select(s => new { teacher_id = s.UserId, teacher_name = s.User.Full_Name, stubject_id = s.Subject_ID }).ToListAsync();
+                return Ok(teachers);
+            }
+
+           
+        }
+        #endregion
         // Helper function to validate level based on stage
         private bool ValidateLevel(string stage, int level)
         {
@@ -443,6 +476,146 @@ namespace final_project_Api.Controllers
                     return false;
             }
         }
+
+
+        #region git for edit
+
+        [HttpGet("GETClass/{id}")]
+        public async Task<ActionResult<Get_for_editClass>> GetClasses(int id)
+        {
+            var classEntity = await _context.classes
+                .Include(c => c.Student_Class)
+                    .ThenInclude(sc => sc.students)
+                        .ThenInclude(s => s.User)
+                .Include(c => c.Teacher_Class)
+                    .ThenInclude(tc => tc.Teacher)
+                        .ThenInclude(t => t.User)
+                .Include(c => c.Teacher_Class)
+                    .ThenInclude(tc => tc.Teacher.subject)
+                .FirstOrDefaultAsync(c => c.Class_ID == id);
+
+            if (classEntity == null)
+            {
+                return NotFound(new { message = "هذا الفصل غير موجود." });
+            }
+
+            // بناء كائن ClassDto مع معلومات الطلاب والمدرسين
+            var classDto = new Get_for_editClass
+            {
+                ClassID = classEntity.Class_ID,
+                ClassName = classEntity.Class_Name,
+                Stage = classEntity.Stage,
+                Level = classEntity.Level,
+                Students = classEntity.Student_Class
+                    .Select(sc => new StudentgetDto
+                    {
+                        StudentID = sc.students.UserId, // استخدام UserId كمعرف للطالب
+                        FullName = sc.students.User.Full_Name
+                    })
+                    .ToList(),
+                Teachers = classEntity.Teacher_Class
+                    .Select(tc => new TeachergetDto
+                    {
+                        TeacherID = tc.Teacher.UserId, // استخدام UserId كمعرف للمدرس
+                        FullName = tc.Teacher.User.Full_Name
+                    })
+                    .ToList(),
+                SubjectNames = classEntity.Teacher_Class
+                    .Select(tc => tc.Teacher.subject.Subject_Name)
+                    .Distinct() 
+                    .ToList()
+            };
+
+            return Ok(classDto);
+        }
+
+        #endregion
+
+
+
+
+        #region edit
+        [HttpPut("EditClass/{id}")]
+
+
+        public async Task<IActionResult> Edit(int id, ClassCreateUpdateDto update)
+        {
+            try
+            {
+                // جلب الطلاب المرتبطين بالفصل الحالي
+                var class_entity = await _context.student_classes.Where(c => c.Class_ID == id).ToListAsync();
+
+                // حذف الطلاب الموجودين في القائمة الجديدة (الذين يجب حذفهم)
+                foreach (var existingStudent in class_entity)
+                {
+                    if (update.StudentIds.Contains(existingStudent.Student_ID))
+                    {
+                        _context.student_classes.Remove(existingStudent);
+                    }
+                }
+
+                // إضافة الطلاب الجدد الذين لم يكونوا موجودين في الفصل
+                foreach (var newStudentId in update.StudentIds)
+                {
+                    if (!class_entity.Any(sc => sc.Student_ID == newStudentId))
+                    {
+                        var newStudent = new Student_Class
+                        {
+                            Student_ID = newStudentId,
+                            Class_ID = id
+                        };
+                        _context.student_classes.Add(newStudent);
+                    }
+                }
+
+                
+                var teacher_entity = await _context.teacher_Classes.Where(c => c.Class_ID == id).ToListAsync();
+
+                
+                foreach (var existingTeacher in teacher_entity)
+                {
+                    if (update.TeacherIds.Contains(existingTeacher.Teacher_ID))
+                    {
+                        _context.teacher_Classes.Remove(existingTeacher);
+                    }
+                }
+
+               
+                foreach (var newTeacherId in update.TeacherIds)
+                {
+                    if (!teacher_entity.Any(tc => tc.Teacher_ID == newTeacherId))
+                    {
+                        var newTeacher = new Teacher_Class
+                        {
+                            Teacher_ID = newTeacherId,
+                            Class_ID = id
+                        };
+                        _context.teacher_Classes.Add(newTeacher);
+                    }
+                }
+
+                
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "تم التعديل بنجاح" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+      
+
+
     }
+    #endregion
+
+
+
+
+
 
 }
+
+
