@@ -12,7 +12,7 @@ using final_project_Api.Models;
 namespace final_project_Api.Migrations
 {
     [DbContext(typeof(AgialContext))]
-    [Migration("20240926201954_init")]
+    [Migration("20241011062958_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -498,16 +498,13 @@ namespace final_project_Api.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Student_ID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("studentsUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Student_Class_Id");
 
                     b.HasIndex("Class_ID");
 
-                    b.HasIndex("studentsUserId");
+                    b.HasIndex("Student_ID");
 
                     b.ToTable("student_classes");
                 });
@@ -623,20 +620,12 @@ namespace final_project_Api.Migrations
                     b.Property<int?>("Class_ID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Subject_ID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SubjectsSubject_ID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Teacher_ID")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("TC_ID");
 
                     b.HasIndex("Class_ID");
-
-                    b.HasIndex("SubjectsSubject_ID");
 
                     b.HasIndex("Teacher_ID");
 
@@ -755,7 +744,7 @@ namespace final_project_Api.Migrations
                         .HasForeignKey("Parent_ID");
 
                     b.HasOne("final_project_Api.Models.Student", "Student")
-                        .WithMany()
+                        .WithMany("Parent_Teacher_Feedbacks")
                         .HasForeignKey("Student_ID");
 
                     b.HasOne("final_project_Api.Models.Teacher", "Teacher")
@@ -835,7 +824,7 @@ namespace final_project_Api.Migrations
 
                     b.HasOne("final_project_Api.Models.Student", "students")
                         .WithMany("Student_Classes")
-                        .HasForeignKey("studentsUserId");
+                        .HasForeignKey("Student_ID");
 
                     b.Navigation("classs");
 
@@ -897,17 +886,11 @@ namespace final_project_Api.Migrations
                         .WithMany("Teacher_Class")
                         .HasForeignKey("Class_ID");
 
-                    b.HasOne("final_project_Api.Models.Subject", "Subjects")
-                        .WithMany()
-                        .HasForeignKey("SubjectsSubject_ID");
-
                     b.HasOne("final_project_Api.Models.Teacher", "Teacher")
                         .WithMany("teacher_Classes")
                         .HasForeignKey("Teacher_ID");
 
                     b.Navigation("Class");
-
-                    b.Navigation("Subjects");
 
                     b.Navigation("Teacher");
                 });
@@ -954,6 +937,8 @@ namespace final_project_Api.Migrations
 
             modelBuilder.Entity("final_project_Api.Models.Student", b =>
                 {
+                    b.Navigation("Parent_Teacher_Feedbacks");
+
                     b.Navigation("Payments");
 
                     b.Navigation("Session_Students");
