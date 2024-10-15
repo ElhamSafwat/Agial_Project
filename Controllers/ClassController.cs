@@ -1,6 +1,7 @@
 ﻿using final_project_Api.Admin_ClassDTO;
 using final_project_Api.DTO;
 using final_project_Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace final_project_Api.Controllers
 
         #region 1. Get All Classes
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<ClassDto>>> GetClasses()
         {
             var classes = await _context.classes
@@ -92,6 +94,7 @@ namespace final_project_Api.Controllers
 
         #region 3. Create New Class
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ClassDto>> CreateClass(ClassCreateUpdateDto classCreateDto)
         {
             // قائمة لتخزين رسائل الأخطاء
@@ -382,6 +385,7 @@ namespace final_project_Api.Controllers
 
         #region 5. Delete Class
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteClass(int id)
         {
             var classEntity = await _context.classes
@@ -432,6 +436,7 @@ namespace final_project_Api.Controllers
         
         #region get student by stage and level
         [HttpGet("students/{stage}/{level}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult>getstudentsforclass(string stage ,int level)
         {
             var students = await _context.students.Where(s => s.Stage == stage && s.Level == level).Select(s => new { student_id = s.UserId, student_name = s.User.Full_Name }).ToListAsync(); ;
@@ -444,6 +449,7 @@ namespace final_project_Api.Controllers
 
         #region get teacher
         [HttpGet("teachers/{stage}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> getteacherforclass(string stage)
         {
            
@@ -481,6 +487,7 @@ namespace final_project_Api.Controllers
         #region git for edit
 
         [HttpGet("GETClass/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Get_for_editClass>> GetClasses(int id)
         {
             var classEntity = await _context.classes
@@ -537,7 +544,7 @@ namespace final_project_Api.Controllers
         #region edit
         [HttpPut("EditClass/{id}")]
 
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, ClassCreateUpdateDto update)
         {
             try

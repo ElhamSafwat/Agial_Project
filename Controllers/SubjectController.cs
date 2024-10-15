@@ -1,6 +1,7 @@
 ﻿using final_project_Api.DTOs;
 using final_project_Api.Models;
 using final_project_Api.SubjectDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,7 @@ namespace final_project_Api.Controllers
 
         // GET: api/subject
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<getsubjectDto>>> GetSubjects()
         {
             try
@@ -59,6 +61,7 @@ namespace final_project_Api.Controllers
 
         // GET: api/subject/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<getsubjectDto>> GetSubject(int id)
         {
             try
@@ -93,6 +96,7 @@ namespace final_project_Api.Controllers
 
         // POST: api/subjects
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Subject>> PostSubject(putpostSubjectDtos putpostDtos)
         {
             try
@@ -143,6 +147,7 @@ namespace final_project_Api.Controllers
 
         // PUT: api/subject/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutSubject(int id, putpostSubjectDtos putDtos)
         {
             try

@@ -1,5 +1,6 @@
 ﻿using final_project_Api.DTO;
 using final_project_Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace final_project_Api.Controllers
         #region getAll
         // GET: api/ParentTeacherFeedback
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<teacherparentfeedbackgetall>>> GetFeedbacks()
         {
             var feedbacks = await _context.parent_Teacher_Feedbacks
@@ -76,6 +78,7 @@ namespace final_project_Api.Controllers
 
         // GET: api/ParentTeacherFeedback/teacher/{teacherId}
         [HttpGet("teacher/{teacherId}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<ActionResult<IEnumerable<getbyteacheridfeedback>>> GetFeedbacksByTeacherId(string teacherId)
         {
             var feedbacks = await _context.parent_Teacher_Feedbacks
@@ -136,6 +139,7 @@ namespace final_project_Api.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddFeedback(Create_TeacherparentFeedback feedbackDto)
         {
             if (!ModelState.IsValid)
@@ -220,6 +224,7 @@ namespace final_project_Api.Controllers
 
         #region newWithFare
         [HttpGet("students/{teacherId}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<ActionResult<List<ClassWithStudentsAndParentsDTO>>> GetStudentsAndParentsByTeacherId(string teacherId)
         {
             // Retrieve the teacher and their associated classes

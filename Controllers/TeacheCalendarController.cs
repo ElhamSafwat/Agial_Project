@@ -1,5 +1,6 @@
 ﻿using final_project_Api.DTO;
 using final_project_Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace final_project_Api.Controllers
         }
         //get all for teacher
         [HttpGet("{id}/{month}/{year}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> teacher_session(string id,int month,int year)
         {
             var T_c=await context.teacher_Classes.Where(tc=>tc.Teacher_ID==id).
@@ -75,6 +77,7 @@ namespace final_project_Api.Controllers
         #region calendar for student
         //get all for teacher
         [HttpGet("student/{id}/{month}/{year}")]
+        [Authorize(Roles = "Student,Parent")]
         public async Task<IActionResult> student_session(string id, int month, int year)
         {
             var class_id=await context.student_classes.Where(s=>s.Student_ID==id).Select(s=>s.Class_ID).ToListAsync();
@@ -138,6 +141,7 @@ namespace final_project_Api.Controllers
         #region by parent id view get his student
 
         [HttpGet("parent/{parent_id}")]
+        [Authorize(Roles = "Parent")]
         public async Task<IActionResult> has_son(string parent_id)
         {
             var list_student=await context.students.Where(s=>s.Parent_ID == parent_id)

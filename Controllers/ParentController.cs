@@ -2,6 +2,7 @@
 using final_project_Api.Models;
 using final_project_Api.Parentdtos;
 using final_project_Api.Serviece;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,7 @@ namespace final_project_Api.Controllers
         #region create parent and student
         // POST: api/Parent/AddParent
         [HttpPost("AddParent")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddParent(ParentDTO parentDTO)
         {
             var errors = new List<string>();
@@ -177,6 +179,7 @@ namespace final_project_Api.Controllers
 
         #region all function parent 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<GetParentDTO>>> GetParents()
         {
             var Parentehitstudent = await _context.parent
@@ -198,6 +201,7 @@ namespace final_project_Api.Controllers
             return Ok(Parentehitstudent);
         }
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<GetParentDTO>> GetParentById(string id)
         {
             var parent = await _context.parent
@@ -222,6 +226,7 @@ namespace final_project_Api.Controllers
             return Ok(parent);
         }
         [HttpGet("byname/{name}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<GetParentDTO>>> GetParentByName(string name)
         {
             var parents = await _context.parent
@@ -248,6 +253,7 @@ namespace final_project_Api.Controllers
 
         //// PUT: api/Parent/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutParent(string id, ParentUpdateDTO parentUpdateDTO)
         {
             var parent = await _context.parent
@@ -298,6 +304,7 @@ namespace final_project_Api.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteParent(string id)
         {
             // 1: Find the parent and their students
@@ -418,6 +425,7 @@ namespace final_project_Api.Controllers
         #endregion
 
         [HttpGet("liststudent/{parentId}")]
+        [Authorize(Roles = "Parent")]
         public async Task<ActionResult<List<GetstudentparentbyidDTO>>> GetstudentbyParentById(string parentId)
         {
             var students = await _context.parent

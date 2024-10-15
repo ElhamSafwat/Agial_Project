@@ -1,5 +1,6 @@
 ﻿using final_project_Api.DTO;
 using final_project_Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@ namespace final_project_Api.Controllers
         }
 
         [HttpPost("InsertExamResult")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> InsertExamResult(StudentExamForTeacher studentExamDto)
         {
             // تأكيد الطلاب موجودين
@@ -104,6 +106,7 @@ namespace final_project_Api.Controllers
 
         /* ***************************************************************************** */
         [HttpPut("UpdateStudentDegree/{studentId}/{examId}/{teacherId}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> UpdateStudentDegree(string studentId, int examId, string teacherId, [FromBody] float degree)
         {
             // التحقق مما إذا كان الطالب موجودًا
@@ -176,6 +179,7 @@ namespace final_project_Api.Controllers
 
         /* ***************************************************************************** */
         [HttpGet("GetStudentExamsByExamId/{examId}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> GetStudentExamsByExamId(int examId)
         {
             // تحقق من وجود الامتحان
@@ -223,6 +227,7 @@ namespace final_project_Api.Controllers
         /* ***************************************************************************** */
         // new E.Eman
         [HttpGet("GetStudentExamsByStudentId/{studentId}")]
+        [Authorize(Roles = "Parent,Student")]
         public async Task<IActionResult> GetStudentExamsByStudentId(string studentId)
         {
             // Check if the student exists
@@ -260,6 +265,7 @@ namespace final_project_Api.Controllers
         /* ***************************************************************************** */
 
         [HttpGet("GetStudentDegree/{studentId}/{examId}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> GetStudentDegree(string studentId, int examId)
         {
             // Check if the student exists
@@ -300,6 +306,7 @@ namespace final_project_Api.Controllers
 
         #region newWithFare
         [HttpGet("students/{teacherId}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<ActionResult<List<ClassWithStudentsDTO>>> GetStudentsByTeacherId(string teacherId)
         {
             // Retrieve the teacher and their associated classes
@@ -345,6 +352,7 @@ namespace final_project_Api.Controllers
 
         #region newWithFaresToReturnWithTeacherIDAndDateReturnTheExam
         [HttpGet("/Teacher/{Teacher_id}/date/{date}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Get_Exam_By_Teacher_And_Date(string Teacher_id, DateTime date)
         {
             try

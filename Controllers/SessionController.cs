@@ -1,6 +1,7 @@
 ﻿using final_project_Api.Admin_ClassDTO;
 using final_project_Api.DTO;
 using final_project_Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace final_project_Api.Controllers
         }
         #region add new session
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> post(List<Create_Session> sess)
         {
             //create list from class to add session
@@ -194,6 +196,7 @@ namespace final_project_Api.Controllers
         #region get all
         //get all sesion 
         [HttpGet]
+        [Authorize(Roles = "Admin,Teacher")]
         public async Task<IActionResult> getAll()
         {
             List<Session> DataFromDB = await context.sessions.Include(s=>s.Teacher_Class).ToListAsync();
@@ -253,6 +256,7 @@ namespace final_project_Api.Controllers
         /**************************************************************************************/
         #region Get Session By ID 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> getsessionbyid(int id)
         {
             try
@@ -286,6 +290,7 @@ namespace final_project_Api.Controllers
 
         #region get sessions table for one class
         [HttpGet("{class_name}/{stage}/{level}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> getby_class_name(string class_name,string stage,int level)
         {
             
@@ -356,6 +361,7 @@ namespace final_project_Api.Controllers
 
         #region get session basic data 
         [HttpGet("{datefrom}/{dateto}")]
+        [Authorize(Roles ="Admin")]
 
         public async Task<IActionResult> get_by_dates(DateTime datefrom, DateTime dateto)
         {
@@ -432,6 +438,7 @@ namespace final_project_Api.Controllers
         //deleteby determine date that you want delete from her to date that less then it
 
         [HttpDelete("{date:datetime}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> delete_by_date(DateTime date)
         {
             var dateTO=DateOnly.FromDateTime(date);
@@ -484,6 +491,7 @@ namespace final_project_Api.Controllers
 
         //to delete one session
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> delete_by_Id(int id)
         {
 
@@ -522,6 +530,7 @@ namespace final_project_Api.Controllers
         #region edit
 
         [HttpPut("int")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> edit(int id, Edit_Session e_session)
         {
             try
@@ -556,6 +565,7 @@ namespace final_project_Api.Controllers
         #endregion
 
         [HttpGet("{classId}/teachers")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetTeachersByClass(int classId)
         {
             var teachers = await context.teacher_Classes

@@ -1,4 +1,5 @@
 ﻿using final_project_Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace final_project_Api.Controllers
 
         // GET: api/TeacherClass/GetTeachersByStudent/{studentId}
         [HttpGet("GetTeachersByStudent/{studentId}")]
+        [Authorize(Roles = "Parent")]
         public async Task<IActionResult> GetTeachersByStudent(string studentId)
         {
             var classId = await context.student_classes

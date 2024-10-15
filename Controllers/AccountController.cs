@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using final_project_Api.Parentdtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace final_project_Api.Controllers
 {
@@ -32,7 +33,7 @@ namespace final_project_Api.Controllers
 
 
         [HttpPost("Login")]
-
+        
         public async Task<IActionResult> Login(LoginDTO userlogin)
         {
             if (!ModelState.IsValid)
@@ -93,6 +94,7 @@ namespace final_project_Api.Controllers
 
         #region get_profile
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> get(string id)
         {
             ApplicationUser user=await userManager.FindByIdAsync(id);
@@ -114,6 +116,7 @@ namespace final_project_Api.Controllers
         #region edit profile
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> edit(string id,ProfileEditeDTO proedit)
         {
            
@@ -175,36 +178,40 @@ namespace final_project_Api.Controllers
 
         #region edit password
         [HttpPut("password/{id}")]
+        [Authorize]
         public async Task<IActionResult> edit_password(string id, passwordEdit proedit)
         {
-
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "من فضلك ادخل داتا صحيجه" });
+                return BadRequest(new { message = "من فضلك ادخل داتا صحيحه" });
             }
 
             ApplicationUser user = await userManager.FindByIdAsync(id);
             if (user != null)
             {
-
-
-                if (!await userManager.CheckPasswordAsync(user, proedit.oldpassword))
-                {
-                    return BadRequest(new { message = "من فضلك ادخل كلمه المرور القديمه صحيحه" });
-                }
-            
-
                 
-                dbContext.Users.Update(user);
-                dbContext.SaveChanges();
-                return Ok(new { message = "تم تعديل بنجاح" });
+                if (await userManager.CheckPasswordAsync(user, proedit.oldpassword))
+                {
+                    
+                    var result = await userManager.ChangePasswordAsync(user, proedit.oldpassword, proedit.new_password);
+
+                    if (result.Succeeded)
+                    {
+                        return Ok(new { message = "تم تعديل بنجاح" });
+                    }
+                    else
+                    {
+                        
+                        return BadRequest(new { message = "حدث خطأ أثناء تعديل كلمة المرور", errors = result.Errors });
+                    }
+                }
+
+                return BadRequest(new { message = "من فضلك ادخل كلمه المرور القديمه صحيحه" });
             }
 
-            return BadRequest();
-
-
-
+            return BadRequest(new { message = "المستخدم غير موجود" });
         }
+
         #endregion
     }
 }

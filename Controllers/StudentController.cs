@@ -3,6 +3,7 @@ using final_project_Api.DTO;
 using final_project_Api.Models;
 using final_project_Api.Parentdtos;
 using final_project_Api.Serviece;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,7 @@ namespace final_project_Api.Controllers
 
         #region Get All Students
         [HttpGet]
+        [Authorize(Roles ="Admin")]
         public IActionResult getStudents()
         {
             List<Student> students= context.students.Include(s => s.User).Include(s => s.parent.User).ToList();
@@ -51,6 +53,7 @@ namespace final_project_Api.Controllers
 
         #region Get Student By ID
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult getStudentById(string id)
         {
             var student=context.students.Include(s => s.User).Include(s=>s.parent.User).FirstOrDefault(s=>s.UserId==id);
@@ -99,6 +102,7 @@ namespace final_project_Api.Controllers
 
         #region Create New Student
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddStudent(AddStudentDTo AddStudDto)
         {
             var existingUser = await userManager.FindByEmailAsync(AddStudDto.Student_Email);
@@ -171,6 +175,7 @@ namespace final_project_Api.Controllers
 
         #region Delate Student
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DelaeteStudent(string id)
         {
             var student = context.students.Include(s => s.User)
@@ -244,6 +249,7 @@ namespace final_project_Api.Controllers
 
         #region Edit Student
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditStudent(string id, Edit_StudentDTO studentDTO)
         {
             try
@@ -299,6 +305,7 @@ namespace final_project_Api.Controllers
 
         #region get all classes for one teacher
         [HttpGet("{teacherId}/teachers")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> GetClassByTeacher(string teacherId)
         {
             var teachers = await context.teacher_Classes
@@ -318,6 +325,7 @@ namespace final_project_Api.Controllers
         #region get students for one class
 
         [HttpGet("{classId}/students")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> GetStudentsByClass(int classId)
         {
             var teachers = await context.student_classes
@@ -337,6 +345,7 @@ namespace final_project_Api.Controllers
 
         #region get degree for assingment =>one student
         [HttpGet("assignmentgrades/{studentId}")]
+        [Authorize(Roles = "Parent,Student")]
         public async Task<ActionResult<IEnumerable<getAssignmentForStudentDTO>>> GetGradesByStudentId(string studentId)
         {
             var grades = await context.Session_Students
@@ -366,6 +375,7 @@ namespace final_project_Api.Controllers
 
         #region get all assingment for one student
         [HttpGet("unsubmittedassignments/{studentId}")]
+        [Authorize(Roles = "Student")]
         public async Task<ActionResult<IEnumerable<getAssignmentForStudentDTO>>> GetUnsubmittedAssignmentsByStudentId(string studentId)
         {
             var assignments = await context.Session_Students
@@ -395,6 +405,7 @@ namespace final_project_Api.Controllers
 
         #region get all teachers for one student
         [HttpGet("teachers/{studentId}")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> GetTeachersByStudent(string studentId)
         {
             var teachers = await context.student_classes

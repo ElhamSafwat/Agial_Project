@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using final_project_Api.DTOs;
 using Microsoft.AspNetCore.Identity;
 using final_project_Api.Serviece;
+using Microsoft.AspNetCore.Authorization;
 
 namespace final_project_Api.Controllers
 {
@@ -29,6 +30,7 @@ namespace final_project_Api.Controllers
 
         // Url http://localhost:5175/api/Teacher   // GetAllTeacherWithSubject
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<TeacherWithSubjectDTO>>> GetTeachers()
         {
             var teachersWithSubjects = await _context.teachers
@@ -87,6 +89,7 @@ namespace final_project_Api.Controllers
         ////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPost("AddTeacher")]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult> AddTeacher(AddTeacherDTO addTeacherDTO)
         {
             // Check if password and confirm password match
@@ -188,6 +191,7 @@ namespace final_project_Api.Controllers
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Url http://localhost:5175/api/Teacher/DeleteTeacher/{userId}
         [HttpDelete("DeleteTeacher/{userId}")]  // DeleteTeacherInsertIntoIsDeleteJustTrueNotDelete
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteTeacher(string userId)
         {
             var teacher = await _context.teachers

@@ -1,5 +1,6 @@
 ﻿using final_project_Api.DTO;
 using final_project_Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace final_project_Api.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Parent")]
         public async Task<IActionResult> AddFeedback(Create_ParentTeacherFeedback feedbackDto)
         {
             if (!ModelState.IsValid)
@@ -122,6 +124,7 @@ namespace final_project_Api.Controllers
         //Parents presented the comments he wrote for admin
         //display for only admin
         [HttpGet]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Get_all()
         {
             List<Parent_Teacher_Feedback> parent_Teacher_Feedbacks = await context.parent_Teacher_Feedbacks.
@@ -250,6 +253,7 @@ namespace final_project_Api.Controllers
         // display for parent his comments
         //display only parent
         [HttpGet("parent/{parent_id}")]
+        [Authorize(Roles = "Parent")]
         public async Task<IActionResult> get_for_parent(string parent_id)
         {
             List<Parent_Teacher_Feedback> get_feedback=await context.parent_Teacher_Feedbacks.
@@ -354,6 +358,7 @@ namespace final_project_Api.Controllers
         //only admin
 
         [HttpGet("{class_name}/{stage}/{level}/{from}")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> search_by_name(string class_name,string stage,int level,string from)
         {
             var get_class= await context.classes.Include(c=>c.Teacher_Class).Where(c=>c.Class_Name==class_name&&c.Stage==stage&&c.Level== level).FirstOrDefaultAsync(); ;

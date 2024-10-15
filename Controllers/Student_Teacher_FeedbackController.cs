@@ -1,5 +1,6 @@
 ﻿using final_project_Api.DTO;
 using final_project_Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +38,7 @@ namespace final_project_Api.Controllers
             return studentClassIds.Intersect(teacherClassIds).Any();
         }
         [HttpPost("add-feedback")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> AddFeedback(StudentTeacherFeedbackAddDto dto)
         {
             // التحقق من وجود الطالب
@@ -128,6 +130,7 @@ namespace final_project_Api.Controllers
         //                return Ok(feedback);
         //            }
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<StudentTeacherFeedbackDto>>> GetAllFeedbacks()
         {
             var feedbacks = await _context.student_Teacher_Feedbacks
@@ -169,7 +172,8 @@ namespace final_project_Api.Controllers
             return Ok(feedback);
         }
         [HttpGet("get-feedbacks-by-teacher/{teacherId}")]
-            public async Task<IActionResult> GetFeedbacksByTeacher(string teacherId)
+        
+        public async Task<IActionResult> GetFeedbacksByTeacher(string teacherId)
             {
                 var feedbacks = await _context.student_Teacher_Feedbacks
                     .Where(f => f.Teacher_ID == teacherId)
@@ -180,6 +184,7 @@ namespace final_project_Api.Controllers
                 return Ok(feedbacks);
             }
         [HttpGet("get-feedbacks-by-student/{studentId}")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> GetFeedbacksByStudent(string studentId)
         {
             var feedbacks = await _context.student_Teacher_Feedbacks
@@ -239,6 +244,7 @@ namespace final_project_Api.Controllers
         }
         //##############################################
         [HttpGet("{className}/{stage}/{level}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetFeedbacksByClassInfo(string className, string stage, int level)
         {
             // التحقق مما إذا كان اسم الفصل موجود في قاعدة البيانات

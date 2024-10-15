@@ -1,5 +1,6 @@
 ﻿using final_project_Api.DTO;
 using final_project_Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ namespace final_project_Api.Controllers
 
         #region Get all Exams
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetExam()
         {
             List<Exam> exams = await context.exam.Include(e => e.Tech).Include(e=>e.Tech.User).ToListAsync();
@@ -50,6 +52,7 @@ namespace final_project_Api.Controllers
         
         #region Get Exam By ID
         [HttpGet("/id/{id}")]
+        [Authorize(Roles ="Teacher")]
         public async Task<IActionResult> Get_Exam_By_ID(int id)
         {
             var exam = context.exam.Include(e => e.Tech).Include(e => e.Tech.User).FirstOrDefault(s => s.Exam_ID == id);
@@ -229,6 +232,7 @@ namespace final_project_Api.Controllers
     
         #region Create Exam
         [HttpPost]
+        [Authorize(Roles ="Teacher")]
         public async Task<IActionResult> AddExam(Create_ExamDTO create_ExamDTO)
         {
             try
@@ -298,6 +302,7 @@ namespace final_project_Api.Controllers
 
         #region Edit Exam
         [HttpPut("{id}")]
+        [Authorize(Roles ="Teacher")]
         public async Task<IActionResult> Edit_Exam(int id,Edit_ExamDTO edit_ExamDTO)
         {
             try
@@ -350,6 +355,7 @@ namespace final_project_Api.Controllers
 
         #region Delete Exam
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteExam(int id)
         {
             try

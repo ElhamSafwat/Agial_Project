@@ -1,6 +1,7 @@
 ﻿using final_project_Api.Admin_ClassDTO;
 using final_project_Api.DTO;
 using final_project_Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace final_project_Api.Controllers
         #region Record Attendance for a Student and Session
         // POST: api/Attendance/RecordAttendance/5/5
         [HttpPost("RecordAttendance")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> RecordAttendance(List<CreateAttendance> attendances)
         {
             
@@ -118,6 +120,7 @@ namespace final_project_Api.Controllers
 
         // GET: api/Attendance/5
         [HttpGet("{sessionId}/{studentId}")]
+       
         public async Task<ActionResult<SessionStudentDTO>> GetSessionStudent(int sessionId, string studentId)
         {
             var sessionStudent = await agialContext.Session_Students
@@ -141,6 +144,7 @@ namespace final_project_Api.Controllers
        
         // PUT: api/Attendance/5
         [HttpPut("{sessionId}/{studentId}")]
+        
         public async Task<IActionResult> PutSessionStudent(int sessionId, string studentId, SessionStudentDTO sessionStudentDTO)
         {
             if (sessionId != sessionStudentDTO.SessionID || studentId != sessionStudentDTO.Student_ID)

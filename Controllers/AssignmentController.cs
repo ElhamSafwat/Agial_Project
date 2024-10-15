@@ -1,5 +1,6 @@
 ﻿using final_project_Api.DTO;
 using final_project_Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +17,9 @@ namespace final_project_Api.Controllers
             agialContext = _agialContext;
         }
 
-
+       
         [HttpPost("AddAssignmentToSession/{sessionId}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddAssignmentToSession(int sessionId, string assignment)
         {
             //Find the TC_ID associated with the specified session.
@@ -65,6 +67,7 @@ namespace final_project_Api.Controllers
 
 
         [HttpGet("ByClassAndSession/{sessionId}")]
+        [Authorize(Roles = "Teacher,Student")]
         public async Task<ActionResult<IEnumerable<AssignmentDTO>>> GetAssignmentsByClassAndSession( int sessionId)
         {
             // Find all Assignments based on SessionID and ClassID
@@ -81,6 +84,7 @@ namespace final_project_Api.Controllers
 
 
         [HttpPut("{sessionId}/{studentId}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> UpdateAssignment(int sessionId, string studentId, string assignment)
         {
             // Search for a session using session number and student number
@@ -103,6 +107,7 @@ namespace final_project_Api.Controllers
 
 
         [HttpDelete("{sessionId}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteAssignment(int sessionId)
         {
             var sessionStudent = await agialContext.Session_Students
@@ -124,6 +129,7 @@ namespace final_project_Api.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Teacher")]
         public async Task<ActionResult<IEnumerable<AssignmentDTO>>> GetAllAssignments()
         {
             return await agialContext.Session_Students
@@ -137,6 +143,7 @@ namespace final_project_Api.Controllers
         }
 
         [HttpGet("ByDate/{date}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<ActionResult<IEnumerable<AssignmentDTO>>> GetAssignmentsByDate(DateTime date)
         {
             return await agialContext.Session_Students
@@ -152,6 +159,7 @@ namespace final_project_Api.Controllers
 
 
         [HttpPost("AddStudentDegree")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddStudentDegree( List<CreatedegreeforAssigment> assigment)
         {
 
