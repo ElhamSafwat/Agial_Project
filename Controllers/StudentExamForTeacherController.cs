@@ -27,30 +27,30 @@ namespace final_project_Api.Controllers
             var student = await _context.students.FindAsync(studentExamDto.Student_Id);
             if (student == null)
             {
-                return NotFound("هذا الطالب غير موجود.");
+                return NotFound(new { message = "هذا الطالب غير موجود." });
             }
 
             // تأكيد الامتحان موجود
             var exam = await _context.exam.FindAsync(studentExamDto.Exam_Id);
             if (exam == null)
             {
-                return NotFound("هذا الامتحان غير موجود");
+                return NotFound(new { message = "هذا الامتحان غير موجود" });
             }
 
             // صلاحيه الامتحان مع هذا الطالب
             if (exam.Teacher_ID != studentExamDto.Teacher_Id)
             {
-                return BadRequest("هذا المعلم ليس لديه الصلاحية لتصحيح هذا الامتحان.");
+                return BadRequest(new { message = "هذا المعلم ليس لديه الصلاحية لتصحيح هذا الامتحان." });
             }
 
             if (studentExamDto.Degree < 0)
             {
-                return BadRequest("لا يمكن أن تكون الدرجة أقل من 0.");
+                return BadRequest(new { message = "لا يمكن أن تكون الدرجة أقل من 0." });
             }
 
             if (studentExamDto.Degree > exam.Max_Degree)
             {
-                return BadRequest($"{exam.Max_Degree} اقصى درجه لهذا الامتحان هى");
+                return BadRequest(new { message = $"{exam.Max_Degree} اقصى درجه لهذا الامتحان هى" });
             }
 
             // لو الطالب خد الامتحان قبل كده
@@ -59,7 +59,7 @@ namespace final_project_Api.Controllers
 
             if (existingStudentExam != null)
             {
-                return BadRequest("هذا الطالب قد أجرى هذا الامتحان مسبقًا.");
+                return BadRequest(new { message = "هذا الطالب قد أجرى هذا الامتحان مسبقًا." });
             }
 
             // تأكيد المدرس مع الطلاب في نفس الكلاس
@@ -68,7 +68,7 @@ namespace final_project_Api.Controllers
 
             if (teacherClass == null)
             {
-                return BadRequest("لم يتم العثور على الفصل الخاص بالمعلم.");
+                return BadRequest(new { message = "لم يتم العثور على الفصل الخاص بالمعلم." });
             }
 
             var studentClass = await _context.student_classes
@@ -76,7 +76,7 @@ namespace final_project_Api.Controllers
 
             if (studentClass == null)
             {
-                return BadRequest("الطالب والمعلم ليسوا في نفس الفصل.");
+                return BadRequest(new { message = "الطالب والمعلم ليسوا في نفس الفصل." });
             }
 
             // Create a new Student_Exam record
@@ -94,11 +94,11 @@ namespace final_project_Api.Controllers
             // Check if the student's degree is below the MinDegree (Fail) or above (Pass)
             if (studentExamDto.Degree < exam.Min_Degree)
             {
-                return Ok("تم إدخال نتيجة الامتحان وهذا الطالب ساقط في هذا الامتحان.");
+                return Ok(new { message = "تم إدخال نتيجة الامتحان وهذا الطالب ساقط في هذا الامتحان." });
             }
             else
             {
-                return Ok("تم إدخال نتيجة الامتحان وهذا الطالب ناجح في هذا الامتحان.");
+                return Ok(new { message = "تم إدخال نتيجة الامتحان وهذا الطالب ناجح في هذا الامتحان." });
             }
         }
 
@@ -110,21 +110,21 @@ namespace final_project_Api.Controllers
             var student = await _context.students.FindAsync(studentId);
             if (student == null)
             {
-                return NotFound("Student not found.");
+                return NotFound(new { message = "Student not found." });
             }
 
             // التحقق مما إذا كان الامتحان موجودًا
             var exam = await _context.exam.FindAsync(examId);
             if (exam == null)
             {
-                return NotFound("Exam not found.");
+                return NotFound(new { message = "Exam not found." });
             }
 
             // التحقق مما إذا كان المدرس موجودًا
             var teacher = await _context.teachers.FindAsync(teacherId); // Assuming you have a teachers table
             if (teacher == null)
             {
-                return NotFound("Teacher not found.");
+                return NotFound(new { message = "Teacher not found." });
             }
 
             // التحقق مما إذا كان الطالب قد أجرى هذا الامتحان بالفعل
@@ -133,13 +133,13 @@ namespace final_project_Api.Controllers
 
             if (studentExam == null)
             {
-                return NotFound("This student has not taken the exam yet.");
+                return NotFound(new { message = "This student has not taken the exam yet." });
             }
 
             // التحقق مما إذا كانت الدرجة الجديدة تتجاوز الدرجة القصوى للامتحان
             if (degree > exam.Max_Degree)
             {
-                return BadRequest($"The degree cannot exceed the maximum allowed degree of {exam.Max_Degree}.");
+                return BadRequest(new { message = $"The degree cannot exceed the maximum allowed degree of {exam.Max_Degree}." });
             }
 
             // تحديث الدرجة
@@ -148,7 +148,7 @@ namespace final_project_Api.Controllers
             // حفظ التعديلات في قاعدة البيانات
             await _context.SaveChangesAsync();
 
-            return Ok("Student exam degree updated successfully.");
+            return Ok(new { message = "Student exam degree updated successfully." });
         }
         /* ***************************************************************************** */
         [HttpGet("GetAllStudentExams")]
@@ -182,7 +182,7 @@ namespace final_project_Api.Controllers
             var exam = await _context.exam.FindAsync(examId);
             if (exam == null)
             {
-                return NotFound("هذا الامتحان ليس موجود");
+                return NotFound(new { message = "هذا الامتحان ليس موجود" });
             }
 
             var studentExams = await _context.student_Exams
@@ -215,7 +215,7 @@ namespace final_project_Api.Controllers
 
             if (!studentExams.Any())
             {
-                return NotFound("هذا الامتحان لم يمتحنوا طلاب بعد");
+                return NotFound(new { message = "هذا الامتحان لم يمتحنوا طلاب بعد" });
             }
 
             return Ok(studentExams);
@@ -229,7 +229,7 @@ namespace final_project_Api.Controllers
             var student = await _context.students.FindAsync(studentId);
             if (student == null)
             {
-                return NotFound("هذا الطالب ليس موجود.");
+                return NotFound(new { message = "هذا الطالب ليس موجود." });
             }
 
             // Retrieve exams for the given Student ID
@@ -253,7 +253,7 @@ namespace final_project_Api.Controllers
                 .ToListAsync();
             if (!studentExams.Any())
             {
-                return NotFound("هذا الطالب لم يمتحن بعد");
+                return NotFound(new { message = "هذا الطالب لم يمتحن بعد" });
             }
             return Ok(studentExams);
         }
@@ -266,14 +266,14 @@ namespace final_project_Api.Controllers
             var student = await _context.students.FindAsync(studentId);
             if (student == null)
             {
-                return NotFound("هذا الطالب ليس موجود.");
+                return NotFound(new { message = "هذا الطالب ليس موجود." });
             }
 
             // Check if the exam exists
             var exam = await _context.exam.FindAsync(examId);
             if (exam == null)
             {
-                return NotFound("هذا الامتحان ليس موجود.");
+                return NotFound(new { message = "هذا الامتحان ليس موجود." });
             }
 
             // Retrieve the student's exam result and additional information
@@ -290,7 +290,7 @@ namespace final_project_Api.Controllers
 
             if (studentExam == null)
             {
-                return NotFound("هذا الطالب لم يمتحن في هذا الامتحان.");
+                return NotFound(new { message = "هذا الطالب لم يمتحن في هذا الامتحان." });
             }
 
             // Return student name, degree, max degree, and min degree
@@ -310,7 +310,7 @@ namespace final_project_Api.Controllers
 
             if (teacher == null)
             {
-                return NotFound("Teacher not found.");
+                return NotFound(new { message = "Teacher not found." });
             }
 
             var classWithStudentsList = new List<ClassWithStudentsDTO>();
@@ -361,7 +361,7 @@ namespace final_project_Api.Controllers
 
                 if (exams.Count == 0) // Check if no exams were found
                 {
-                    return NotFound($"No exams found for Teacher '{Teacher_id}' on '{date.ToShortDateString()}'.");
+                    return NotFound(new { message = $"No exams found for Teacher '{Teacher_id}' on '{date.ToShortDateString()}'." });
                 }
 
                 // Create a list of DTOs

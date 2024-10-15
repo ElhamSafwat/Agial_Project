@@ -94,7 +94,7 @@ namespace final_project_Api.Controllers
                 if (entity_feed == null)
                 {
 
-                    return NotFound("من فضلك ادخل معرف صحيح ");
+                    return NotFound(new { message = "من فضلك ادخل معرف صحيح " });
                 }
 
                 entity_feed.FeedBack = feedbackDto.FeedBack;
@@ -102,13 +102,13 @@ namespace final_project_Api.Controllers
                 entity_feed.date = DateTime.Now;
                 context.parent_Teacher_Feedbacks.Update(entity_feed);
                 await context.SaveChangesAsync();
-                return Ok("تم تعديل بنجاح.");
+                return Ok(new { message = "تم تعديل بنجاح." });
             }
 
             catch (DbUpdateConcurrencyException)
             {
 
-                return BadRequest("من فضلك ادخل داتا صحيحه ");
+                return BadRequest(new { message = "من فضلك ادخل داتا صحيحه " });
 
             }
 

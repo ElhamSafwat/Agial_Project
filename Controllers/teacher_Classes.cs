@@ -33,7 +33,7 @@ namespace final_project_Api.Controllers
 
             if (teacherClasses.Count == 0)
             {
-                return NotFound("No classes found for this teacher.");
+                return NotFound(new { message = "No classes found for this teacher." });
             }
 
             var result = new GetTeacherClass

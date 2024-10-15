@@ -75,7 +75,7 @@ namespace final_project_Api.Controllers
             _context.student_Teacher_Feedbacks.Add(feedback);
             await _context.SaveChangesAsync();
 
-            return Ok("Feedback added successfully.");
+            return Ok(new { message = "Feedback added successfully." });
         }
         //############################################
 
@@ -86,7 +86,7 @@ namespace final_project_Api.Controllers
 
             if (feedback == null)
             {
-                return NotFound("Feedback not found.");
+                return NotFound(new { message = "Feedback not found." });
             }
 
             //if (!AreStudentAndTeacherInSameClass(dto.Student_ID, dto.Teacher_ID))
@@ -164,7 +164,7 @@ namespace final_project_Api.Controllers
 
             if (feedback == null)
             {
-                return NotFound("feedback not found");
+                return NotFound(new { message = "feedback not found" });
             }
             return Ok(feedback);
         }
@@ -202,7 +202,7 @@ namespace final_project_Api.Controllers
 
             if (feedbacks == null || feedbacks.Count == 0)
             {
-                return NotFound("No feedbacks found for this student.");
+                return NotFound(new { message = "No feedbacks found for this student." });
             }
 
             return Ok(feedbacks);
@@ -232,7 +232,7 @@ namespace final_project_Api.Controllers
 
             if (feedbacks == null || feedbacks.Count == 0)
             {
-                return NotFound("No feedbacks found for this class.");
+                return NotFound(new { message = "No feedbacks found for this class." });
             }
 
             return Ok(feedbacks);
@@ -256,25 +256,25 @@ namespace final_project_Api.Controllers
             // حالة التحقق من وجود الثلاثة معًا
             if (classExists == null && stageExists == null && levelExists == null)
             {
-                return NotFound("Class name, stage, and level do not exist.");
+                return NotFound(new { message = "Class name, stage, and level do not exist." });
             }
 
             // إذا كان اسم الفصل غير موجود
             if (classExists == null)
             {
-                return NotFound("Class name does not exist.");
+                return NotFound(new { message = "Class name does not exist." });
             }
 
             // إذا كانت المرحلة غير موجودة
             if (stageExists == null)
             {
-                return NotFound("Stage name does not exist.");
+                return NotFound(new { mewwsage = "Stage name does not exist." });
             }
 
             // إذا كان المستوى غير موجود
             if (levelExists == null)
             {
-                return NotFound("Level name does not exist.");
+                return NotFound(new { message = "Level name does not exist." });
             }
 
 
@@ -306,7 +306,7 @@ namespace final_project_Api.Controllers
 
             if (feedbacks == null || feedbacks.Count == 0)
             {
-                return NotFound("No feedbacks found for the specified class, stage, and level.");
+                return NotFound(new { message = "No feedbacks found for the specified class, stage, and level." });
             }
 
             return Ok(feedbacks);

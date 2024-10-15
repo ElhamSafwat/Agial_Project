@@ -55,7 +55,7 @@ namespace final_project_Api.Controllers
             var exam = context.exam.Include(e => e.Tech).Include(e => e.Tech.User).FirstOrDefault(s => s.Exam_ID == id);
             if (exam == null)
             {
-                return NotFound();
+                return NotFound(new {message="لا يوجد هذا الامتحان"});
             }
             Get_ExamDTO examDTO = new Get_ExamDTO
             {
@@ -80,7 +80,7 @@ namespace final_project_Api.Controllers
             List<Exam> exams=await context.exam.Include(e=>e.Tech).Where(e=>e.Teacher_ID==Teacher_id).ToListAsync();
             if (exams.Count == 0) // تحقق مما إذا كانت القائمة فارغة
             {
-                return NotFound($"هذا المعلم '{Teacher_id}' لم يقم بأنشاء امتحانات بعد.");
+                return NotFound(new { message = $"هذا المعلم '{Teacher_id}' لم يقم بأنشاء امتحانات بعد." });
             }
             List<Get_ExamByTechIDDTO> ExamByTechIDDTOs = new List<Get_ExamByTechIDDTO>();
             foreach (var exam in exams)
@@ -114,7 +114,7 @@ namespace final_project_Api.Controllers
 
             if (exams.Count == 0)
             {
-                return NotFound($"لا يوجد امتحانات لهذه المجموعه '{className}'");
+                return NotFound(new { message = $"لا يوجد امتحانات لهذه المجموعه '{className}'" });
             }
 
             List<Get_ExamDTO> examDTOs = new List<Get_ExamDTO>();
@@ -148,7 +148,7 @@ namespace final_project_Api.Controllers
 
                 if (exams.Count == 0) // تحقق مما إذا كانت القائمة فارغة
                 {
-                    return NotFound("لم يتم انشاء امتحان في هذا اليوم");
+                    return NotFound(new { message = "لم يتم انشاء امتحان في هذا اليوم" });
                 }
 
                 List<Get_ExamDTO> examDTOs = new List<Get_ExamDTO>();
@@ -241,20 +241,20 @@ namespace final_project_Api.Controllers
                 // التحقق من أن Exam_Date هو تاريخ اليوم أو بعده
                 if (create_ExamDTO.Exam_Date < DateTime.Today)
                 {
-                    return BadRequest("تاريخ الامتحان لا يجب ان يكون في الماضي");
+                    return BadRequest(new { message = "تاريخ الامتحان لا يجب ان يكون في الماضي" });
                 }
 
                 // التحقق من أن Min_Degree أقل من Max_Degree
                 if (create_ExamDTO.Min_Degree >= create_ExamDTO.Max_Degree)
                 {
-                    return BadRequest("Min_Degree must be less than Max_Degree.");
+                    return BadRequest(new {message="الدرجه الصغره يجب ان تكون اقل من الدرجه العظمي "});
                 }
 
                 // التحقق من أن Start_Time أقل من End_Time
                 if ((create_ExamDTO.Start_Time <= 0 || create_ExamDTO.Start_Time > 12) ||
                     (create_ExamDTO.End_Time <= 0 || create_ExamDTO.End_Time > 12))
                 {
-                    return BadRequest("من فضلك ادخل الوقت الصحيح.");
+                    return BadRequest(new { message = "من فضلك ادخل الوقت الصحيح." });
                 }
                 // Validate class_name against Teacher_Class table
                 var teacherClass = await context.teacher_Classes
@@ -263,7 +263,7 @@ namespace final_project_Api.Controllers
 
                 if (teacherClass == null)
                 {
-                    return BadRequest("هذا المعلم لم يدرس لهذا الفصل ");
+                    return BadRequest(new { message = "هذا المعلم لم يدرس لهذا الفصل " });
                 }
                 //if (teacherClass==null || teacherClass.Teacher.subject.Subject_Name != create_ExamDTO.subject_name)
                 //{
@@ -285,7 +285,7 @@ namespace final_project_Api.Controllers
 
                 context.exam.Add(exam);
                 await context.SaveChangesAsync();
-                return Ok(new { message = $"تم أضافه الامتحان ." });
+                return Ok(new { message = "تم أضافه الامتحان ." });
 
                 //return Ok(exam);
             }
@@ -305,7 +305,7 @@ namespace final_project_Api.Controllers
                 var exam = await context.exam.Include(e => e.Tech).Include(e => e.Tech.User).FirstOrDefaultAsync(e => e.Exam_ID == id);
                 if(exam == null)
                 {
-                    return NotFound("!من فضلك ادخل رقم الامتحان الصحيح");
+                    return NotFound(new { message = "!من فضلك ادخل رقم الامتحان الصحيح" });
                 }
                 if (!ModelState.IsValid)
                 {
@@ -315,20 +315,20 @@ namespace final_project_Api.Controllers
                 // التحقق من أن Exam_Date هو تاريخ اليوم أو بعده
                 if (edit_ExamDTO.Exam_Date < DateTime.Today)
                 {
-                    return BadRequest("Exam_Date cannot be in the past.");
+                    return BadRequest(new {message="تاريخ الامتحان لا يمكن ان يكون في الماضي "});
                 }
 
                 // التحقق من أن Min_Degree أقل من Max_Degree
                 if (edit_ExamDTO.Min_Degree >= edit_ExamDTO.Max_Degree)
                 {
-                    return BadRequest("Min_Degree must be less than Max_Degree.");
+                    return BadRequest(new {message="الدرجه الصغره لا يجب ان تكون اقل من الدرجه العظمي "});
                 }
 
                 // التحقق من أن Start_Time أقل من End_Time
                 if ((edit_ExamDTO.Start_Time <= 0 || edit_ExamDTO.Start_Time > 12) ||
                     (edit_ExamDTO.End_Time <= 0 || edit_ExamDTO.End_Time > 12))
                 {
-                    return BadRequest("من فضلك ادخل الوقت الصحيح.");
+                    return BadRequest(new { message = "من فضلك ادخل الوقت الصحيح." });
                 }
 
                 exam.Exam_Date = edit_ExamDTO.Exam_Date;
@@ -357,7 +357,7 @@ namespace final_project_Api.Controllers
                 var exam= await context.exam.Include(e=>e.Tech).Include(e=>e.Student_Exam).FirstOrDefaultAsync(e=>e.Exam_ID==id);
                 if (exam == null)
                 {
-                    return NotFound("من فضلك ادخل رقم الامتحان الصحيح");
+                    return NotFound(new { message = "من فضلك ادخل رقم الامتحان الصحيح" });
                 }
                 if(exam.Student_Exam != null)
                 {
@@ -374,6 +374,7 @@ namespace final_project_Api.Controllers
             }
         }
         #endregion
+
     }
 }
 
