@@ -29,7 +29,7 @@ namespace final_project_Api.Controllers
 
             if (session == null)
             {
-                return NotFound(new { message = "Session not found." });
+                return NotFound(new { message = "لا يوجد حصص " });
             }
 
             // Class_ID from Teacher_Class
@@ -43,7 +43,7 @@ namespace final_project_Api.Controllers
 
             if (studentsInClass == null || studentsInClass.Count == 0)
             {
-                return NotFound(new { message = "No students found in the specified class." });
+                return NotFound(new { message = "لا يوجد طلاب في هذه المجموعه " });
             }
 
             // إضافة Assignment جديد لكل طالب في الفصل
@@ -62,7 +62,7 @@ namespace final_project_Api.Controllers
             // Save changes
             await agialContext.SaveChangesAsync();
 
-            return Ok(new { message = "Assignment added to all students in the class." });
+            return Ok(new { message = "تم اضافه الواجب لجميع الطلاب في هذه المجموعه" });
         }
 
 
@@ -93,7 +93,7 @@ namespace final_project_Api.Controllers
 
             if (sessionStudent == null)
             {
-                return NotFound();
+                return NotFound(new {message="لا يوجد واجب لهذه الحصه و هذا الطالب "});
             }
 
             // Update Assignment
@@ -102,7 +102,7 @@ namespace final_project_Api.Controllers
             // save changes 
             await agialContext.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new {message="تم التعديل بنجاح "});
         }
 
 
@@ -115,7 +115,7 @@ namespace final_project_Api.Controllers
 
             if (sessionStudent == null)
             {
-                return NotFound();
+                return NotFound(new {message="لا يوجد واجب لهذه الحصه "});
             }
 
             // Delete Assignment
@@ -124,7 +124,7 @@ namespace final_project_Api.Controllers
             // Save Changes
             await agialContext.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new {message="تم الحذف بنجاح "});
         }
 
 
@@ -170,7 +170,7 @@ namespace final_project_Api.Controllers
                 {
                     foreach (var item in sessionStudent)
                     {
-                        if (ass.studentId == item.Student_ID && ass.sessionId == item.Session_ID)
+                        if (ass.studentId == item.Student_ID && ass.sessionId == item.Session_ID&&ass.assignment==item.Assignment)
                         {
                             item.Degree = ass.degree;
                             agialContext.Update(item);
@@ -183,17 +183,55 @@ namespace final_project_Api.Controllers
                 return Ok(new{ message="تم اضافه درجات بنجاح"});
             }
             catch (Exception ex) { 
-            
+
               return BadRequest(ex.Message);
             }
 
-
-
-
-
-
-
-          
         }
+
+        //[HttpPost("AddStudentDegree")]
+        //public async Task<IActionResult> AddStudentDegree(List<CreatedegreeforAssigment> assignments)
+        //{
+        //    try
+        //    {
+        //        // جلب جميع سجلات Session_Students من قاعدة البيانات
+        //        var sessionStudents = await agialContext.Session_Students.ToListAsync();
+
+        //        foreach (var assignment in assignments)
+        //        {
+        //            // التحقق من أن assignment ليس null
+        //            if (assignment.assignment == null)
+        //            {
+        //                return BadRequest("لا يمكن إضافة درجة لمهمة غير محددة.");
+        //            }
+
+        //            // البحث عن الطالب في القائمة بناءً على الشروط المحددة
+        //            var studentSession = sessionStudents.FirstOrDefault(item =>
+        //                item.Student_ID == assignment.studentId &&
+        //                item.Session_ID == assignment.sessionId &&
+        //                item.Assignment == assignment.assignment);
+
+        //            // إذا وُجد الطالب، قم بتحديث الدرجة
+        //            if (studentSession != null)
+        //            {
+        //                studentSession.Degree = assignment.degree;
+        //                agialContext.Update(studentSession);
+        //            }
+        //            else
+        //            {
+        //                return BadRequest("لم يتم العثور على الطالب أو الجلسة أو المهمة المحددة.");
+        //            }
+        //        }
+
+        //        // حفظ التغييرات في قاعدة البيانات
+        //        await agialContext.SaveChangesAsync();
+        //        return Ok(new { message = "تم إضافة درجات بنجاح" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
+
     }
 }

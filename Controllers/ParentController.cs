@@ -165,7 +165,7 @@ namespace final_project_Api.Controllers
                 {
                     _context.parent.Remove(have_student);
                     await _context.SaveChangesAsync();
-                    return BadRequest("لن تسطيع اضافه بيانات ولي لامر من فضلك ادخل بيانات ابنائه صحيحه ");
+                    return BadRequest(new { message = "لن تسطيع اضافه بيانات ولي لامر من فضلك ادخل بيانات ابنائه صحيحه " });
 
                 }
 
@@ -220,7 +220,7 @@ namespace final_project_Api.Controllers
 
             if (parent == null)
             {
-                return NotFound(); // Return 404 if the parent is not found
+                return NotFound(new {message="لا يوجد ولي امر"}); // Return 404 if the parent is not found
             }
 
             return Ok(parent);
@@ -262,12 +262,12 @@ namespace final_project_Api.Controllers
 
             if (parent == null)
             {
-                return NotFound($"Parent userid {id} not found.");
+                return NotFound(new { message = $"Parent userid {id} not found." });
             }
 
             if (parent.User == null)
             {
-                return NotFound($"User for parent with userid {id} not found.");
+                return NotFound(new { message = $"User for parent with userid {id} not found." });
             }
 
             // Update the student's list for the parent
@@ -281,7 +281,7 @@ namespace final_project_Api.Controllers
            
             else if (await _userManager.FindByEmailAsync(parentUpdateDTO.Email) != null)
             {
-                    return BadRequest("تلك اميل موجود بالفعل ");
+                    return BadRequest(new { message = "تلك اميل موجود بالفعل " });
             }
             else
             {
@@ -315,7 +315,7 @@ namespace final_project_Api.Controllers
 
             if (parent == null)
             {
-                return NotFound($"Parent with id {id} not found.");
+                return NotFound(new { message = $"Parent with id {id} not found." });
             }
 
             // 2: Delete student exams from Student_Exam table
@@ -441,7 +441,7 @@ namespace final_project_Api.Controllers
 
             if (students == null || students.Count == 0)
             {
-                return NotFound(); // Return 404 if no students are found
+                return NotFound(new {message="لا بوجد ابناء لولي الاهر هذا "}); // Return 404 if no students are found
             }
 
             return Ok(students);

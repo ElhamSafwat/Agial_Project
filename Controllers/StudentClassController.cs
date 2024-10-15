@@ -28,7 +28,7 @@ namespace final_project_Api.Controllers
 
             if (classId == null)
             {
-                return NotFound("Student not enrolled in any class.");
+                return NotFound(new { message = "Student not enrolled in any class." });
             }
 
             var teachers = await context.teacher_Classes
@@ -43,7 +43,7 @@ namespace final_project_Api.Controllers
 
             if (!teachers.Any())
             {
-                return NotFound("No teachers found for this student.");
+                return NotFound(new { message = "No teachers found for this student." });
             }
 
             return Ok(teachers);

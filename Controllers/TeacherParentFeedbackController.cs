@@ -67,7 +67,7 @@ namespace final_project_Api.Controllers
 
             if (feedbacks == null || !feedbacks.Any())
             {
-                return NotFound("لا توجد ملاحظات لهذا الوالد.");
+                return NotFound(new { message = "لا توجد ملاحظات لهذا الوالد." });
             }
 
             return Ok(feedbacks);
@@ -96,7 +96,7 @@ namespace final_project_Api.Controllers
 
             if (feedbacks == null || !feedbacks.Any())
             {
-                return NotFound("لا توجد ملاحظات لهذا المعلم.");
+                return NotFound(new { message = "لا توجد ملاحظات لهذا المعلم." });
             }
 
             return Ok(feedbacks);
@@ -126,7 +126,7 @@ namespace final_project_Api.Controllers
 
             if (feedback == null)
             {
-                return NotFound($"لا توجد ملاحظة بهذا المعرف: {id}");
+                return NotFound(new { message = $"لا توجد ملاحظة بهذا المعرف: {id}" });
             }
 
             return Ok(feedback);
@@ -153,13 +153,13 @@ namespace final_project_Api.Controllers
 
             if (teacher == null || parent == null || student == null)
             {
-                return NotFound("Teacher, Parent, or Student not found.");
+                return NotFound(new { message = "Teacher, Parent, or Student not found." });
             }
             //check this parent is parent this student 
             bool isparent = student.Parent_ID == feedbackDto.Parent_ID;
             if (isparent == false)
             {
-                return BadRequest("هذا ليس ولدك");
+                return BadRequest(new { message = "هذا ليس ولدك" });
             }
             //check this teacher is teaching this student 
             bool is_same_class = false;
@@ -193,11 +193,11 @@ namespace final_project_Api.Controllers
                 _context.parent_Teacher_Feedbacks.Add(feedback);
                 await _context.SaveChangesAsync();
 
-                return Ok("تم اضافه التعليق بنجاح");
+                return Ok(new { message = "تم اضافه التعليق بنجاح" });
             }
             else
             {
-                return BadRequest("تلك معلم لا يدرس لولدك هن فضلك اختار مدرس الصح ");
+                return BadRequest(new { message = "تلك معلم لا يدرس لولدك هن فضلك اختار مدرس الصح " });
             }
         }
         #endregion
@@ -235,7 +235,7 @@ namespace final_project_Api.Controllers
 
             if (teacher == null)
             {
-                return NotFound("Teacher not found.");
+                return NotFound(new { message = "Teacher not found." });
             }
 
             var classWithStudentsAndParentsList = new List<ClassWithStudentsAndParentsDTO>();

@@ -35,7 +35,7 @@ namespace final_project_Api.Controllers
             {
                 if (sess == null || sess.Count == 0)
                 {
-                    return BadRequest("لا توجد حصص تم اضافتها");
+                    return BadRequest(new { message = "لا توجد حصص تم اضافتها" });
                 }
                 foreach (var item in sess)
                 {
@@ -264,7 +264,7 @@ namespace final_project_Api.Controllers
                 var session = await context.sessions.Include(s=>s.Teacher_Class.Class).Include(s => s.Teacher_Class.Teacher.User).FirstOrDefaultAsync(s => s.Session_ID == id);
                 if(session == null)
                 {
-                    return NotFound();
+                    return NotFound(new {message="لا يوجد حصص "});
                 }
                 Get_Sessions sessionsdto = new Get_Sessions 
                 { 
@@ -301,7 +301,7 @@ namespace final_project_Api.Controllers
 
                 if (class_id ==null|| class_id==0)
                 {
-                    return NotFound(" .من فضلك ادخل اسم مجموعه صح");
+                    return NotFound(new { message = " .من فضلك ادخل اسم مجموعه صح" });
                 }
                 
                    List<Session> DataFromDB = context.sessions.
@@ -312,7 +312,7 @@ namespace final_project_Api.Controllers
                   if(DataFromDB == null)
                   {
 
-                    return NotFound($"{class_name}لا يوجد بعد حصص مجموعه ");
+                    return NotFound(new { message = $"{class_name}لا يوجد بعد حصص مجموعه " });
                   }
                 //to add each object in
                 foreach (var session in DataFromDB) {
@@ -370,7 +370,7 @@ namespace final_project_Api.Controllers
            var dateto1= DateOnly.FromDateTime(dateto);
             if(datefrom1> dateto1)
             {
-                return BadRequest("من فضلك ادخل ترتيب التواريخ صيح يجب ان يكون تاريخ بدليه اصغر من التاريخ النهايه ");
+                return BadRequest(new { message = "من فضلك ادخل ترتيب التواريخ صيح يجب ان يكون تاريخ بدليه اصغر من التاريخ النهايه " });
             }
             try 
             {
@@ -379,7 +379,7 @@ namespace final_project_Api.Controllers
                     Where(s => DateOnly.FromDateTime(s.Date) <= dateto1 && DateOnly.FromDateTime(s.Date) >= datefrom1).ToListAsync();
                 if (sessions_from_db.Count <= 0 || sessions_from_db == null) 
                 { 
-                    return NotFound("لم يتم بعد انشاء جدول حصص لمجموعات في تلك الفترات ");
+                    return NotFound(new { message = "لم يتم بعد انشاء جدول حصص لمجموعات في تلك الفترات " });
                 
                 
                 }
@@ -448,7 +448,7 @@ namespace final_project_Api.Controllers
                 List<Session> list_deletes = await context.sessions.Include(s=>s.session_Students).Where(s => DateOnly.FromDateTime(s.Date) <= dateTO).ToListAsync();
                 if(list_deletes.Count <= 0 || list_deletes == null)
                 {
-                    return NotFound("تلك التاريخ لا يوجد له حصص مسجله تسبقه من اجل حذفها حتي تلك تاريخ");
+                    return NotFound(new { message = "تلك التاريخ لا يوجد له حصص مسجله تسبقه من اجل حذفها حتي تلك تاريخ" });
                 }
                 // delete list of session_student for each obj list of list_deletes
                 foreach (var item in list_deletes)
@@ -464,7 +464,7 @@ namespace final_project_Api.Controllers
 
                 context.sessions.RemoveRange(list_deletes);
                 context.SaveChanges();
-                return Ok("تم الحذف بنجاح");
+                return Ok(new { message = "تم الحذف بنجاح" });
 
             
             
@@ -502,7 +502,7 @@ namespace final_project_Api.Controllers
                 Session sess = await context.sessions.Include(s=>s.session_Students).FirstOrDefaultAsync(s => s.Session_ID == id);
                 if (sess == null)
                 {
-                    return NotFound("من فضلك ادخل معرف صح لي حصصه التي تريد حذفها.");
+                    return NotFound(new { message = "من فضلك ادخل معرف صح لي حصصه التي تريد حذفها." });
                 }
                 // remove related session_Students
                 if (sess.session_Students != null)
@@ -538,7 +538,7 @@ namespace final_project_Api.Controllers
                 Session session = await context.sessions.FirstOrDefaultAsync(s => s.Session_ID == id);
                 if (session == null)
                 {
-                    return NotFound("من فضلك ادخل معرف حصه صحيح الذي تريد حذفه.");
+                    return NotFound(new { message = "من فضلك ادخل معرف حصه صحيح الذي تريد حذفه." });
                 }
 
                 session.Date= e_session.Date;
@@ -563,7 +563,7 @@ namespace final_project_Api.Controllers
 
 
         #endregion
-
+        #region Get teachers for one class
         [HttpGet("{classId}/teachers")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetTeachersByClass(int classId)
@@ -581,6 +581,6 @@ namespace final_project_Api.Controllers
             return Ok(teachers);
 
         }
-
+        #endregion
     }
 }

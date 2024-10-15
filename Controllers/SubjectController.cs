@@ -35,7 +35,7 @@ namespace final_project_Api.Controllers
 
                 if (subjects == null || !subjects.Any())
                 {
-                    return NotFound("لم يتم العثور على مواد دراسية.");
+                    return NotFound(new { message = "لم يتم العثور على مواد دراسية." });
                 }
 
                 var subjectDtos = subjects.Select(s => new getsubjectDto
@@ -73,7 +73,7 @@ namespace final_project_Api.Controllers
 
                 if (subject == null)
                 {
-                    return NotFound("المادة غير موجودة.");
+                    return NotFound(new { message = "المادة غير موجودة." });
                 }
 
                 var subjectDto = new getsubjectDto
@@ -108,7 +108,7 @@ namespace final_project_Api.Controllers
 
                 if (string.IsNullOrWhiteSpace(putpostDtos.Subject_Name))
                 {
-                    return BadRequest("اسم المادة مطلوب.");
+                    return BadRequest(new { message = "اسم المادة مطلوب." });
                 }
 
                 var existingSubject = await _context.subjects
@@ -116,7 +116,7 @@ namespace final_project_Api.Controllers
 
                 if (existingSubject != null)
                 {
-                    return BadRequest("المادة موجودة بالفعل.");
+                    return BadRequest(new { message = "المادة موجودة بالفعل." });
                 }
 
                 var subject = new Subject
@@ -159,13 +159,13 @@ namespace final_project_Api.Controllers
 
                 if (string.IsNullOrWhiteSpace(putDtos.Subject_Name))
                 {
-                    return BadRequest("اسم المادة مطلوب.");
+                    return BadRequest(new { message = "اسم المادة مطلوب." });
                 }
 
                 var subject = await _context.subjects.FirstOrDefaultAsync(s => s.Subject_ID == id);
                 if (subject == null)
                 {
-                    return NotFound("المادة غير موجودة.");
+                    return NotFound(new { message = "المادة غير موجودة." });
                 }
 
                 subject.Description = putDtos.Description;

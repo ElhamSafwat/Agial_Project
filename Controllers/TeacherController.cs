@@ -80,7 +80,7 @@ namespace final_project_Api.Controllers
             // If teacher is not found, return 404
             if (teacherWithSubject == null)
             {
-                return NotFound($"Teacher with UserId '{userId}' not found.");
+                return NotFound(new { message = $"Teacher with UserId '{userId}' not found." });
             }
 
             return Ok(teacherWithSubject);
@@ -95,21 +95,21 @@ namespace final_project_Api.Controllers
             // Check if password and confirm password match
             if (addTeacherDTO.Password != addTeacherDTO.ConfirmPassword)
             {
-                return BadRequest("كلمه السر غير مطابقه فى تاكيد كلمه السر");
+                return BadRequest(new { message = "كلمه السر غير مطابقه فى تاكيد كلمه السر" });
             }
 
             // Check if email already exists
             var existingUser = await _userManager.FindByEmailAsync(addTeacherDTO.Email);
             if (existingUser != null)
             {
-                return BadRequest("البريد الإلكتروني موجود بالفعل");
+                return BadRequest(new { message = "البريد الإلكتروني موجود بالفعل" });
             }
 
             // Check if the Subject_ID exists in the Subjects table
             var subjectExists = await _context.subjects.AnyAsync(s => s.Subject_ID == addTeacherDTO.Subject_ID);
             if (!subjectExists)
             {
-                return BadRequest("هذه الماده غير موجوده");
+                return BadRequest(new { message = "هذه الماده غير موجوده" });
             }
 
             // Start a transaction to ensure that all operations either succeed or fail together
@@ -152,7 +152,7 @@ namespace final_project_Api.Controllers
 
                 _context.teachers.Add(teacher);
                 _context.teacher_Stages.Add(teacher_stage);
-                await emailService.SendRegistrationEmail(addTeacherDTO.Email, addTeacherDTO.UserName, addTeacherDTO.Password);
+                emailService.SendRegistrationEmail(addTeacherDTO.Email, addTeacherDTO.UserName, addTeacherDTO.Password);
 
 
                 // Assign the "Teacher" role to the new user
@@ -171,7 +171,7 @@ namespace final_project_Api.Controllers
                 {
                     // If the role doesn't exist, rollback the transaction
                     await transaction.RollbackAsync();
-                    return BadRequest("The 'Teacher' role does not exist.");
+                    return BadRequest(new { message = "The 'Teacher' role does not exist." });
                 }
 
                 // Save changes to the database and commit the transaction
@@ -200,7 +200,7 @@ namespace final_project_Api.Controllers
 
             if (teacher == null)
             {
-                return NotFound($"Teacher with UserId '{userId}' not found.");
+                return NotFound(new { message = $"Teacher with UserId '{userId}' not found." });
             }
 
             // Get the user (teacher) from the UserManager
@@ -208,7 +208,7 @@ namespace final_project_Api.Controllers
 
             if (user == null)
             {
-                return NotFound($"User with UserId '{userId}' not found in AspNetUsers.");
+                return NotFound(new { message = $"User with UserId '{userId}' not found in AspNetUsers." });
             }
 
             // Get the user's roles
@@ -220,7 +220,7 @@ namespace final_project_Api.Controllers
                 var removeRoleResult = await _userManager.RemoveFromRolesAsync(user, roles);
                 if (!removeRoleResult.Succeeded)
                 {
-                    return BadRequest("Failed to remove roles from the teacher.");
+                    return BadRequest(new { message = "Failed to remove roles from the teacher." });
                 }
             }
 
@@ -232,7 +232,7 @@ namespace final_project_Api.Controllers
             //teacher.Subject_ID = null;
 
             // Save changes to the database
-            await _context.SaveChangesAsync();
+             _context.SaveChanges();
 
             return Ok(new { Message = "Teacher deleted successfully, including from AspNetUserRoles." });
         }

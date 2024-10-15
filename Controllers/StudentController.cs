@@ -59,7 +59,7 @@ namespace final_project_Api.Controllers
             var student=context.students.Include(s => s.User).Include(s=>s.parent.User).FirstOrDefault(s=>s.UserId==id);
             if (student == null)
             {
-                return NotFound();
+                return NotFound(new {message="لا يوجد طالب "});
             }
             GetStudentDTO studentDTO = new GetStudentDTO
             {
@@ -83,7 +83,7 @@ namespace final_project_Api.Controllers
             var student = context.students.Include(s => s.User).Include(s => s.parent.User).FirstOrDefault(s => s.User.UserName==name);
             if (student == null)
             {
-                return NotFound();
+                return NotFound(new {message="لا يوجد طالب بهذا الاسم "});
             }
             GetStudentDTO studentDTO = new GetStudentDTO
             {
@@ -189,7 +189,7 @@ namespace final_project_Api.Controllers
                                                    .FirstOrDefault(s => s.UserId == id);
             if (student == null)
             {
-                return NotFound();
+                return NotFound(new {message="لا يوجد هذا الطالب "});
             }
             try
             {
@@ -380,7 +380,7 @@ namespace final_project_Api.Controllers
         {
             var assignments = await context.Session_Students
                 .Include(ss => ss.Session)
-                .Where(ss => ss.Student_ID == studentId && ss.Degree == 0) // فقط المهام التي لم تُسلم
+                .Where(ss => ss.Student_ID == studentId && ss.Degree == 0 && ss.Assignment!=null) // فقط المهام التي لم تُسلم
                 .Select(ss => new getAssignmentForStudentDTO
                 {
                     Session_ID = ss.Session_ID,
