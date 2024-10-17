@@ -1,5 +1,6 @@
 ﻿using final_project_Api.DTO;
 using final_project_Api.Models;
+using final_project_Api.Serviece;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -15,10 +16,12 @@ namespace final_project_Api.Controllers
     {
         private readonly AgialContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        public Student_Teacher_FeedbackController(AgialContext context, UserManager<ApplicationUser> userManager)
+        private readonly IEmailFeedback emailFeedback;
+        public Student_Teacher_FeedbackController(AgialContext context, UserManager<ApplicationUser> userManager, IEmailFeedback _emailFeedback)
         {
             _context = context;
             _userManager = userManager;
+            emailFeedback = _emailFeedback;
         }
         
         //عشان اشوف في نفس الاكلاس ولا
@@ -317,6 +320,36 @@ namespace final_project_Api.Controllers
 
             return Ok(feedbacks);
         }
+
+
+
+
+
+
+        #region delete
+        [HttpDelete("{id}")]
+        public async Task<IActionResult>delete(int id ,string messeage)
+        {
+            var feed = await _context.student_Teacher_Feedbacks.Include(f=>f.Student.User).
+                FirstOrDefaultAsync(f => f.Student_Teacher_Feedback_Id == id);
+
+          if(feed!= null)
+
+          {
+                emailFeedback.SendDeleteEmail(feed.Student.User.Email,feed.Student.User.Full_Name,messeage);
+
+                _context.student_Teacher_Feedbacks.Remove(feed);
+                _context.SaveChanges();
+                return Ok();
+          }
+          return NoContent();
+
+        }
+        #endregion
+
+
+
     }
-    } 
+    
+} 
 

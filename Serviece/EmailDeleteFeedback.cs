@@ -1,21 +1,20 @@
 ﻿
-using System.Net;
 using System.Net.Mail;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using System.Net;
 
 namespace final_project_Api.Serviece
 {
-    public class EmailService : IEmailService
+    public class EmailDeleteFeedback : IEmailFeedback
     {
+
         private readonly IConfiguration _configuration;
 
-        public EmailService(IConfiguration configuration)
+        public EmailDeleteFeedback(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public  Task SendRegistrationEmail(string toEmail, string username, string password)
+        Task IEmailFeedback.SendDeleteEmail(string toEmail, string username, string becouse)
         {
             var smtpClient = new SmtpClient(_configuration["Smtp:Host"])
             {
@@ -27,13 +26,13 @@ namespace final_project_Api.Serviece
             var mailMessage = new MailMessage
             {
                 From = new MailAddress(_configuration["Smtp:From"]),
-                Subject = "تم انشاء الحساب ",
-                Body = $"مرحبًا،\n\n لقد تم إنشاء حسابك بنجاح في منصه اجيال.\nاسم المستخدم: {username}\nكلمة المرور: {password}",
+                Subject = "تم  حذف تعليقك  ",
+                Body = $"مرحبًا،\n\n  {username}\n لقد تم حذف تعليقك والسبب: {becouse}",
                 IsBodyHtml = false,
             };
             mailMessage.To.Add(toEmail);
 
-            smtpClient.Send(mailMessage);
+             smtpClient.Send(mailMessage);
             return Task.CompletedTask;
         }
     }
