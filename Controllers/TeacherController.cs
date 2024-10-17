@@ -175,7 +175,7 @@ namespace final_project_Api.Controllers
                 }
 
                 // Save changes to the database and commit the transaction
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 await transaction.CommitAsync();
 
                 return Ok(new { Message = "User registered successfully with the 'Teacher' role." });

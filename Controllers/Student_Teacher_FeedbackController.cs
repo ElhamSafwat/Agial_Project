@@ -75,7 +75,7 @@ namespace final_project_Api.Controllers
             };
 
             _context.student_Teacher_Feedbacks.Add(feedback);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return Ok(new { message = "Feedback added successfully." });
         }
@@ -99,36 +99,11 @@ namespace final_project_Api.Controllers
             feedback.Feedback = dto.Feedback;
             feedback.date = DateTime.Now;
             _context.student_Teacher_Feedbacks.Update(feedback);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return Ok(new { message = "Feedback updated successfully." });
         }
 
-        //[HttpGet("get-all-feedbacks")]
-        //public async Task<IActionResult> GetAllFeedbacks()
-        //        {
-        //            var feedbacks = await _context.student_Teacher_Feedbacks
-        //                .Include(f => f.Student)
-        //                .Include(f => f.Teacher)
-        //                .ToListAsync();
-
-        //            return Ok(feedbacks);
-        //        }
-        //            [HttpGet("get-feedback/{id}")]
-        //            public async Task<IActionResult> GetFeedbackById(int id)
-        //            {
-        //                var feedback = await _context.student_Teacher_Feedbacks
-        //                    .Include(f => f.Student)
-        //                    .Include(f => f.Teacher)
-        //                    .FirstOrDefaultAsync(f => f.Student_Teacher_Feedback_Id == id);
-
-        //                if (feedback == null)
-        //                {
-        //                    return NotFound("Feedback not found.");
-        //                }
-
-        //                return Ok(feedback);
-        //            }
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<StudentTeacherFeedbackDto>>> GetAllFeedbacks()

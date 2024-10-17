@@ -73,14 +73,14 @@ namespace final_project_Api.Controllers
                     date = feedbackDto.FeedbackDate
                 };
                 context.parent_Teacher_Feedbacks.Add(feedback);
-                await context.SaveChangesAsync();
+                context.SaveChanges();
 
                 return Ok(new { massege = "تم اضافه التعليق بنجاح" });
             }
             else
             {
                 return BadRequest(new { massege = "تلك معلم لا يدرس لولدك هن فضلك اختار مدرس الصح "});
-                }
+            }
         }
         #endregion
 
@@ -103,7 +103,7 @@ namespace final_project_Api.Controllers
 
                 entity_feed.date = DateTime.Now;
                 context.parent_Teacher_Feedbacks.Update(entity_feed);
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 return Ok(new { message = "تم تعديل بنجاح." });
             }
 

@@ -91,7 +91,7 @@ namespace final_project_Api.Controllers
 
             // Add the new record to the database
             _context.student_Exams.Add(newStudentExam);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             // Check if the student's degree is below the MinDegree (Fail) or above (Pass)
             if (studentExamDto.Degree < exam.Min_Degree)
@@ -149,7 +149,7 @@ namespace final_project_Api.Controllers
             studentExam.Degree = degree;
 
             // حفظ التعديلات في قاعدة البيانات
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return Ok(new { message = "Student exam degree updated successfully." });
         }

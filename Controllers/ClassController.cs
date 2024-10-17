@@ -206,7 +206,7 @@ namespace final_project_Api.Controllers
             };
 
             _context.classes.Add(newClass);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             // إضافة الطلاب إلى الفصل الجديد
             foreach (var student in students)
@@ -223,10 +223,10 @@ namespace final_project_Api.Controllers
                     Teacher_ID = teacher.UserId,
                     Class_ID = newClass.Class_ID
                 };
-                await _context.teacher_Classes.AddAsync(teacherClass);
+                _context.teacher_Classes.Add(teacherClass);
             }
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return CreatedAtAction(nameof(GetClass), new { id = newClass.Class_ID }, new ClassDto
             {
@@ -426,7 +426,7 @@ namespace final_project_Api.Controllers
 
             // Finally, remove the class
             _context.classes.Remove(classEntity);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return Ok(new { message = "تم المسح بنجاح" });
         }
@@ -602,7 +602,7 @@ namespace final_project_Api.Controllers
                 }
 
                 
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return Ok(new { message = "تم التعديل بنجاح" });
             }

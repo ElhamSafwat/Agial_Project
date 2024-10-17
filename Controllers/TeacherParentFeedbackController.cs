@@ -191,7 +191,7 @@ namespace final_project_Api.Controllers
                     date = feedbackDto.FeedbackDate
                 };
                 _context.parent_Teacher_Feedbacks.Add(feedback);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return Ok(new { message = "تم اضافه التعليق بنجاح" });
             }
@@ -215,7 +215,7 @@ namespace final_project_Api.Controllers
             }
 
             _context.parent_Teacher_Feedbacks.Remove(feedback);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return NoContent();
         }

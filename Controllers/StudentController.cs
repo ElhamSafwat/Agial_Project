@@ -164,9 +164,9 @@ namespace final_project_Api.Controllers
             };
             context.students.Add(student);
            
-            await context.SaveChangesAsync();
+             context.SaveChanges();
             // Send email
-            await emailService.SendRegistrationEmail(AddStudDto.Student_Email, AddStudDto.Student_Name, AddStudDto.Password);
+             emailService.SendRegistrationEmail(AddStudDto.Student_Email, AddStudDto.Student_Name, AddStudDto.Password);
 
 
             return Ok(new { message = "Student created successfully.." });
@@ -236,7 +236,7 @@ namespace final_project_Api.Controllers
                     context.Users.RemoveRange(studentUsers);
                 }
 
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 return Ok(new { message = "تم حذف الطالب بنجاح" });
             }
             catch (Exception ex)
