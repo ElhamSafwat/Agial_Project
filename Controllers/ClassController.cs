@@ -405,13 +405,23 @@ namespace final_project_Api.Controllers
             {
                 List<int> tc_ids = classEntity.Teacher_Class.Select(t => t.TC_ID).ToList();
                 List<Session> delete_session = new List<Session>();
+                List<Session_Student> delete_session_Students = new List<Session_Student>();
                 foreach (var item in tc_ids)
                 {
                     var sessions = await _context.sessions.Where(s => s.TC_ID == item).ToListAsync();
+                    var stud_sess = await _context.Session_Students.Where(ss => ss.Session.TC_ID==item).ToListAsync();
+                    if (stud_sess != null)
+                    {
+                        delete_session_Students.AddRange(stud_sess);
+                    }
                     if (sessions != null)
                     {
                         delete_session.AddRange(sessions);
                     }
+                }
+                if (delete_session_Students.Count > 0)
+                {
+                    _context.Session_Students.RemoveRange(delete_session_Students);
                 }
                 if (delete_session.Count > 0)
                 {
@@ -426,7 +436,7 @@ namespace final_project_Api.Controllers
 
             // Finally, remove the class
             _context.classes.Remove(classEntity);
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
 
             return Ok(new { message = "تم المسح بنجاح" });
         }
