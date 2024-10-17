@@ -15,7 +15,10 @@ namespace final_project_Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            //sendemailfor register
             builder.Services.AddScoped<IEmailService, EmailService>();
+            //send mail delete feedback
+            builder.Services.AddScoped<IEmailFeedback, EmailDeleteFeedback>();
 
             // Add services to the container.
             builder.Services.AddDbContext<AgialContext>(options =>
