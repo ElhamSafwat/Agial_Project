@@ -288,7 +288,7 @@ namespace final_project_Api.Controllers
                 };
 
                 context.exam.Add(exam);
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 return Ok(new { message = "تم أضافه الامتحان ." });
 
                 //return Ok(exam);

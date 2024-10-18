@@ -119,7 +119,7 @@ namespace final_project_Api.Controllers
             // تعيين دور للأهل
             await _userManager.AddToRoleAsync(parentUser, "Parent");
 
-            await emailService.SendRegistrationEmail(parentDTO.Email, parentDTO.UserName, parentDTO.Password);
+            emailService.SendRegistrationEmail(parentDTO.Email, parentDTO.UserName, parentDTO.Password);
 
 
             // إضافة الطلاب
@@ -152,7 +152,7 @@ namespace final_project_Api.Controllers
                 _context.students.Add(student);
                 // تعيين دور للطالب
                 await _userManager.AddToRoleAsync(studentUser, "Student");
-                await emailService.SendRegistrationEmail(studentDTO.Student_Email, studentDTO.Student_Name, studentDTO.Password);
+                emailService.SendRegistrationEmail(studentDTO.Student_Email, studentDTO.Student_Name, studentDTO.Password);
 
             }
 
@@ -164,7 +164,7 @@ namespace final_project_Api.Controllers
                 if (have_student.Students == null)
                 {
                     _context.parent.Remove(have_student);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                     return BadRequest(new { message = "لن تسطيع اضافه بيانات ولي لامر من فضلك ادخل بيانات ابنائه صحيحه " });
 
                 }
@@ -172,7 +172,7 @@ namespace final_project_Api.Controllers
             }
             
             // حفظ جميع التغييرات
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return Ok(new { Message = "تم اضافه حساب ولي الامر وابنائه بنجاح" });
         }
         #endregion
@@ -297,7 +297,7 @@ namespace final_project_Api.Controllers
 
 
             // Save changes to the database
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return Ok(new { Message = "تم تحديث الحساب بنجاح " });
         }
@@ -394,7 +394,7 @@ namespace final_project_Api.Controllers
             _context.parent.Remove(parent);
 
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             // 11: Delete the students roles from AspNetUserRoles table
             var studentRoles = await _context.UserRoles
@@ -416,7 +416,7 @@ namespace final_project_Api.Controllers
                 _context.Users.RemoveRange(studentUsers);
             }
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return Ok(new { message = "تم المسح  بنجاح" });  // Return his Message
         }

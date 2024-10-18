@@ -160,7 +160,7 @@ namespace final_project_Api.Controllers
                 {
 
                     context.sessions.AddRange(sessionsadd);
-                    await context.SaveChangesAsync();
+                    context.SaveChanges();
                     //for display error for admin
                     if (errors.Count > 0)
                     {

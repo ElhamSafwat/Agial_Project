@@ -42,8 +42,8 @@ namespace final_project_Api.Controllers
                     list.Add(sessionStudent);
                 }
 
-                await agialContext.Session_Students.AddRangeAsync(list);
-                await agialContext.SaveChangesAsync();
+                 agialContext.Session_Students.AddRange(list);
+               agialContext.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -54,49 +54,7 @@ namespace final_project_Api.Controllers
         }
 
         #endregion
-        //#region Record Attendance for a Student and Session
-        //// POST: api/Attendance/RecordAttendance/5/5
-        //[HttpPost("RecordAttendance")]
-        //[Authorize(Roles = "Teacher")]
-        //public async Task<IActionResult> RecordAttendance(List<CreateAttendance> attendances)
-        //{
-
-        //    List<Session_Student> list = new List<Session_Student>();
-        //    try
-        //    {
-        //        if (attendances.Count > 0)
-        //        {
-        //            foreach (var attendance in attendances)
-        //            {
-        //                Session_Student sessionStudent = new Session_Student();
-        //                sessionStudent.Session_ID = attendance.session_id;
-        //                sessionStudent.Student_ID = attendance.studentId;
-        //                // Update Attendance
-        //                sessionStudent.Attendance = attendance.attandence;
-        //                list.Add(sessionStudent);
-        //            }
-
-        //            agialContext.Session_Students.AddRange(list);
-
-        //            //Save Changes
-        //            await agialContext.SaveChangesAsync();
-        //        }
-
-
-
-        //    }
-        //    catch (Exception ex) 
-        //    {
-
-        //      return BadRequest( new { message = ex.Message });
-        //    }
-
-
-
-        //    return Ok(new { message = "Attendance recorded/updated for the student in the session." });
-        //}
-
-        //#endregion
+       
 
         #region GetAll
         // GET: api/Attendance
@@ -203,7 +161,7 @@ namespace final_project_Api.Controllers
 
             try
             {
-                await agialContext.SaveChangesAsync();
+                agialContext.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {

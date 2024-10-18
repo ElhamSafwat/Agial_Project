@@ -126,7 +126,7 @@ namespace final_project_Api.Controllers
                 };
 
                 _context.subjects.Add(subject);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return Ok(subject);
             }
@@ -171,7 +171,7 @@ namespace final_project_Api.Controllers
                 subject.Description = putDtos.Description;
                 subject.Subject_Name = putDtos.Subject_Name;
 
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return NoContent();
             }
