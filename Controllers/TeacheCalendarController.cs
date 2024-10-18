@@ -43,6 +43,7 @@ namespace final_project_Api.Controllers
                             v.date = DateOnly.FromDateTime(session.Date);
                             v.start = session.Start_Time;
                             v.period = session.period;
+                            v.session_id = session.Session_ID;
 
                             list.Add(v);
 
@@ -114,6 +115,8 @@ namespace final_project_Api.Controllers
                             session.room = item1.Room;
                             session.date = DateOnly.FromDateTime(item1.Date);
                             session.period = item1.period;
+                            session.session_id = item1.Session_ID;
+                            session.end=item1.End_Time;
                             list.Add(session);
 
                         }
