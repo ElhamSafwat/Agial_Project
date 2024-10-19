@@ -65,33 +65,46 @@ namespace final_project_Api.Controllers
             }
 
             // تأكيد المدرس مع الطلاب في نفس الكلاس
-            var teacherClass = await _context.teacher_Classes
-                .FirstOrDefaultAsync(tc => tc.Teacher_ID == studentExamDto.Teacher_Id);
+            //var teacherClass = await _context.teacher_Classes
+            //    .FirstOrDefaultAsync(tc => tc.Teacher_ID == studentExamDto.Teacher_Id);
+            var teacherClass= await _context.teacher_Classes.Where(tc => tc.Teacher_ID == studentExamDto.Teacher_Id).Select(t=>t.Class_ID).ToListAsync();
 
             if (teacherClass == null)
             {
                 return BadRequest(new { message = "لم يتم العثور على الفصل الخاص بالمعلم." });
             }
-
-            var studentClass = await _context.student_classes
-                .FirstOrDefaultAsync(sc => sc.Student_ID == studentExamDto.Student_Id && sc.Class_ID == teacherClass.Class_ID);
-
-            if (studentClass == null)
+            
+            foreach (var id in teacherClass)
             {
-                return BadRequest(new { message = "الطالب والمعلم ليسوا في نفس الفصل." });
+                var studentClass = await _context.student_classes
+                    .FirstOrDefaultAsync(sc => sc.Student_ID == studentExamDto.Student_Id && sc.Class_ID == id);
+                if(studentClass != null)
+                {
+                    var newStudentExam = new Student_Exam
+                    {
+                        Student_ID = studentExamDto.Student_Id,
+                        Exam_ID = studentExamDto.Exam_Id,
+                        Degree = studentExamDto.Degree
+                    };
+
+                    // Add the new record to the database
+                    _context.student_Exams.Add(newStudentExam);
+                    _context.SaveChanges();
+                    break;
+                }
+
             }
 
-            // Create a new Student_Exam record
-            var newStudentExam = new Student_Exam
-            {
-                Student_ID = studentExamDto.Student_Id,
-                Exam_ID = studentExamDto.Exam_Id,
-                Degree = studentExamDto.Degree
-            };
+            //var studentClass = await _context.student_classes
+            //    .FirstOrDefaultAsync(sc => sc.Student_ID == studentExamDto.Student_Id && sc.Class_ID == teacherClass.Class_ID);
 
-            // Add the new record to the database
-            _context.student_Exams.Add(newStudentExam);
-            _context.SaveChanges();
+            //if (studentClass == null)
+            //{
+            //    return BadRequest(new { message = "الطالب والمعلم ليسوا في نفس الفصل." });
+            //}
+
+            // Create a new Student_Exam record
+           
 
             // Check if the student's degree is below the MinDegree (Fail) or above (Pass)
             if (studentExamDto.Degree < exam.Min_Degree)
