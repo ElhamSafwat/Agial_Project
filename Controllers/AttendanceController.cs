@@ -17,44 +17,106 @@ namespace final_project_Api.Controllers
         {
             agialContext = _agialContext;
         }
-        #region attendance
+
+        #region Record Attendance for a Student and Session
+        // POST: api/Attendance/RecordAttendance/5/5
         [HttpPost("RecordAttendance")]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> RecordAttendance(List<CreateAttendance> attendances)
         {
-            if (attendances == null || attendances.Count == 0)
-            {
-                return BadRequest(new { message = "لا يوجد بيانات لحضور الطلاب." });
-            }
 
             List<Session_Student> list = new List<Session_Student>();
-
             try
             {
-                foreach (var attendance in attendances)
+                if (attendances.Count > 0)
                 {
-                    var sessionStudent = new Session_Student
+                    var att = await agialContext.Session_Students.Where(s => s.Session_ID == attendances[0].session_id).FirstOrDefaultAsync();
+                    if (att == null)
                     {
-                        Session_ID = attendance.session_id,
-                        Student_ID = attendance.studentId,
-                        Attendance = attendance.attandence
-                    };
-                    list.Add(sessionStudent);
+                        foreach (var attendance in attendances)
+                        {
+                            Session_Student sessionStudent = new Session_Student();
+                            sessionStudent.Session_ID = attendance.session_id;
+                            sessionStudent.Student_ID = attendance.studentId;
+                            // Update Attendance
+                            sessionStudent.Attendance = attendance.attandence;
+                            list.Add(sessionStudent);
+                        }
+
+                        agialContext.Session_Students.AddRange(list);
+                    }
+                    else
+                    {
+                        foreach (var attendance in attendances)
+                        {
+                            Session_Student sessionStudent = new Session_Student();
+                            sessionStudent.Session_ID = attendance.session_id;
+                            sessionStudent.Student_ID = attendance.studentId;
+                            // Update Attendance
+                            sessionStudent.Attendance = attendance.attandence;
+                            list.Add(sessionStudent);
+                        }
+
+                        agialContext.Session_Students.UpdateRange(list);
+                    }
+                    //Save Changes
+                    await agialContext.SaveChangesAsync();
                 }
 
-                 agialContext.Session_Students.AddRange(list);
-               agialContext.SaveChanges();
+
+
             }
             catch (Exception ex)
             {
+
                 return BadRequest(new { message = ex.Message });
             }
 
-            return Ok(new { message = "تم تسجيل / تحديث الحضور للطلاب في الحصة." });
+
+
+            return Ok(new { message = "Attendance recorded/updated for the student in the session." });
         }
 
         #endregion
-       
+
+        #region attendance
+        //[HttpPost("RecordAttendance")]
+        //[Authorize(Roles = "Teacher")]
+        //public async Task<IActionResult> RecordAttendance(List<CreateAttendance> attendances)
+        //{
+        //    if (attendances == null || attendances.Count == 0)
+        //    {
+        //        return BadRequest(new { message = "لا يوجد بيانات لحضور الطلاب." });
+        //    }
+
+        //    List<Session_Student> list = new List<Session_Student>();
+
+        //    try
+        //    {
+        //        foreach (var attendance in attendances)
+        //        {
+        //            var sessionStudent = new Session_Student
+        //            {
+        //                Session_ID = attendance.session_id,
+        //                Student_ID = attendance.studentId,
+        //                Attendance = attendance.attandence
+        //            };
+        //            list.Add(sessionStudent);
+        //        }
+
+        //         agialContext.Session_Students.AddRange(list);
+        //       agialContext.SaveChanges();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+
+        //    return Ok(new { message = "تم تسجيل / تحديث الحضور للطلاب في الحصة." });
+        //}
+
+        #endregion
+
 
         #region GetAll
         // GET: api/Attendance

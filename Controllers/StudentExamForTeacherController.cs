@@ -178,11 +178,57 @@ namespace final_project_Api.Controllers
         }
 
         /* ***************************************************************************** */
+        //[HttpGet("GetStudentExamsByExamId/{examId}")]
+        //[Authorize(Roles = "Teacher")]
+        //public async Task<IActionResult> GetStudentExamsByExamId(int examId)
+        //{
+        //    // تحقق من وجود الامتحان
+        //    var exam = await _context.exam.FindAsync(examId);
+        //    if (exam == null)
+        //    {
+        //        return NotFound(new { message = "هذا الامتحان ليس موجود" });
+        //    }
+
+        //    var studentExams = await _context.student_Exams
+        //        .Where(se => se.Exam_ID == examId)
+        //        .Include(se => se.Student)
+        //        .ThenInclude(s => s.User)   // للحصول على بيانات الطالب
+        //        .Include(se => se.Student)
+        //        .ThenInclude(s => s.parent) // الربط مع جدول الوالد
+        //        .Include(se => se.Exam)
+        //        .ThenInclude(e => e.Tech)
+        //        .ThenInclude(t => t.User)
+        //        .Select(se => new
+        //        {
+        //            StudentID = se.Student_ID,
+        //            StudentName = se.Student.User.Full_Name,
+        //            ExamID = se.Exam.Exam_ID,
+        //            Degree = se.Degree,
+        //            MaxDegree = se.Exam.Max_Degree,
+        //            MinDegree = se.Exam.Min_Degree,
+        //            SubjectName = se.Exam.subject_name,
+        //            Status = se.Degree < se.Exam.Min_Degree ? "سيء" : "جيد",
+
+        //            // Fetch the parent's phone number from AspNetUsers using Parent's UserId
+        //            ParentPhone = _context.Users
+        //                .Where(u => u.Id == se.Student.parent.UserId)
+        //                .Select(u => u.PhoneNumber)
+        //                .FirstOrDefault()
+        //        })
+        //        .ToListAsync();
+
+        //    if (!studentExams.Any())
+        //    {
+        //        return NotFound(new { message = "هذا الامتحان لم يمتحنوا طلاب بعد" });
+        //    }
+
+        //    return Ok(studentExams);
+        //}
+
         [HttpGet("GetStudentExamsByExamId/{examId}")]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> GetStudentExamsByExamId(int examId)
         {
-            // تحقق من وجود الامتحان
             var exam = await _context.exam.FindAsync(examId);
             if (exam == null)
             {
@@ -192,9 +238,9 @@ namespace final_project_Api.Controllers
             var studentExams = await _context.student_Exams
                 .Where(se => se.Exam_ID == examId)
                 .Include(se => se.Student)
-                .ThenInclude(s => s.User)   // للحصول على بيانات الطالب
+                .ThenInclude(s => s.User)
                 .Include(se => se.Student)
-                .ThenInclude(s => s.parent) // الربط مع جدول الوالد
+                .ThenInclude(s => s.parent)
                 .Include(se => se.Exam)
                 .ThenInclude(e => e.Tech)
                 .ThenInclude(t => t.User)
@@ -207,9 +253,8 @@ namespace final_project_Api.Controllers
                     MaxDegree = se.Exam.Max_Degree,
                     MinDegree = se.Exam.Min_Degree,
                     SubjectName = se.Exam.subject_name,
-                    Status = se.Degree < se.Exam.Min_Degree ? "سيء" : "جيد",
+                    Status = GetStudentStatus((float)se.Degree, (float)se.Exam.Max_Degree, (float)se.Exam.Min_Degree),
 
-                    // Fetch the parent's phone number from AspNetUsers using Parent's UserId
                     ParentPhone = _context.Users
                         .Where(u => u.Id == se.Student.parent.UserId)
                         .Select(u => u.PhoneNumber)
@@ -223,6 +268,33 @@ namespace final_project_Api.Controllers
             }
 
             return Ok(studentExams);
+        }
+
+        // StaticMethod
+        private static string GetStudentStatus(float degree, float maxDegree, float minDegree) // إضافة minDegree كوسيط
+        {
+            var excellent = maxDegree * 0.90f;
+            var veryGood = maxDegree * 0.80f;
+            var good = maxDegree * 0.70f;
+
+            if (degree >= excellent)
+            {
+                return "امتياز";
+            }
+            else if (degree >= veryGood)
+            {
+                return "جيد جداً";
+            }
+            else if (degree >= good)
+            {
+                return "جيد";
+            }
+            else if (degree < minDegree)
+            {
+                return "راسب";
+            }
+
+            return "مقبول";
         }
         /* ***************************************************************************** */
         // new E.Eman
