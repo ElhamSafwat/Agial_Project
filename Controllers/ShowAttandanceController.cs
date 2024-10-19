@@ -29,7 +29,7 @@ namespace final_project_Api.Controllers
                         join c in context.classes on t_c.Class_ID equals c.Class_ID
                         join s_s in context.Session_Students on s.Session_ID equals s_s.Session_ID
                         join Stud in context.students on s_s.Student_ID equals Stud.UserId
-                        where s.Date.Year == DateTime.Now.Year || s.Date.Year == (DateTime.Now.Year - 1)
+                        where (s.Date.Year == DateTime.Now.Year || s.Date.Year == (DateTime.Now.Year - 1))&&(s.Date.Day <= DateTime.Now.Day)
                         select new
 
                         {
@@ -123,7 +123,7 @@ namespace final_project_Api.Controllers
                         join c in context.classes on t_c.Class_ID equals c.Class_ID
                         join s_s in context.Session_Students on s.Session_ID equals s_s.Session_ID
                         join Stud in context.students on s_s.Student_ID equals Stud.UserId
-                        where (s.Date.Year == DateTime.Now.Year || s.Date.Year == (DateTime.Now.Year - 1))
+                        where (s.Date.Year == DateTime.Now.Year || s.Date.Year == (DateTime.Now.Year - 1)) && (s.Date.Day <= DateTime.Now.Day)
                               && s_s.Student_ID == studentId // تصفية بناءً على studentId المعطى
                         select new
                         {

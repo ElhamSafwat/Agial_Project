@@ -240,25 +240,25 @@ namespace final_project_Api.Controllers
             // حالة التحقق من وجود الثلاثة معًا
             if (classExists == null && stageExists == null && levelExists == null)
             {
-                return NotFound(new { message = "Class name, stage, and level do not exist." });
+                return NotFound(new { message = "لا يوجد هذه المجموعه مع المرحله مع المستوي المحدد" });
             }
 
             // إذا كان اسم الفصل غير موجود
             if (classExists == null)
             {
-                return NotFound(new { message = "Class name does not exist." });
+                return NotFound(new { message = "لا يوجد اسم هذه المجموعه " });
             }
 
             // إذا كانت المرحلة غير موجودة
             if (stageExists == null)
             {
-                return NotFound(new { mewwsage = "Stage name does not exist." });
+                return NotFound(new { message = "لا يوجد مرحله" });
             }
 
             // إذا كان المستوى غير موجود
             if (levelExists == null)
             {
-                return NotFound(new { message = "Level name does not exist." });
+                return NotFound(new { message = "لا يوجد مستوي بهذا الاسم " });
             }
 
 
@@ -290,7 +290,7 @@ namespace final_project_Api.Controllers
 
             if (feedbacks == null || feedbacks.Count == 0)
             {
-                return NotFound(new { message = "No feedbacks found for the specified class, stage, and level." });
+                return NotFound(new { message = "لا يوجد اراء لعرضها لهذه المجموعه المحدده " });
             }
 
             return Ok(feedbacks);
